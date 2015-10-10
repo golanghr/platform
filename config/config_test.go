@@ -33,7 +33,8 @@ func TestNewManagerCreation(t *testing.T) {
 			},
 		})
 
-		So(err, ShouldHaveSameTypeAs, nil)
+		So(manager.Etcd(), ShouldNotBeNil)
+		So(err, ShouldBeNil)
 		So(manager, ShouldHaveSameTypeAs, &ManagerInstance{})
 	})
 }

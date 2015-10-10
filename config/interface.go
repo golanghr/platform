@@ -5,6 +5,10 @@
 // Package config ...
 package config
 
+import (
+	etcdc "github.com/coreos/etcd/client"
+)
+
 // Config -
 type Config interface {
 	Set(key string, value interface{}, ttl int64) error
@@ -13,4 +17,5 @@ type Config interface {
 
 // Manager -
 type Manager interface {
+	Etcd() etcdc.Client
 }

@@ -20,6 +20,11 @@ type ManagerInstance struct {
 	EtcdClient etcdc.Client
 }
 
+// Etcd -
+func (mi *ManagerInstance) Etcd() etcdc.Client {
+	return mi.EtcdClient
+}
+
 // NewManager -
 func NewManager(cnf map[string]interface{}) (Manager, error) {
 
