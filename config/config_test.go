@@ -106,13 +106,15 @@ func TestCustomTransport(t *testing.T) {
 
 // TestAggregation -
 func TestAggregation(t *testing.T) {
-	Convey("Test If Custom Cancellable Transport", t, func() {
-		manager, err := getTestManager()
+	manager, err := getTestManager()
 
+	Convey("Test If SetTTL and Get works", t, func() {
 		So(err, ShouldBeNil)
 		So(manager.Etcd(), ShouldNotBeNil)
 		So(manager, ShouldHaveSameTypeAs, &ManagerInstance{})
+	})
 
+	Convey("Test If SetTTL and Get works", t, func() {
 		value, err := manager.SetTTL("platform", "Test Golang.hr Platform", 10*time.Second)
 		So(value, ShouldHaveSameTypeAs, &Value{})
 		So(err, ShouldBeNil)
@@ -122,5 +124,16 @@ func TestAggregation(t *testing.T) {
 		So(gerr, ShouldBeNil)
 		So(gvalue.Value(), ShouldEqual, "Test Golang.hr Platform")
 
+	})
+
+	Convey("Test If Set and Get works", t, func() {
+		value, err := manager.Set("platform", "Test Golang.hr Platform")
+		So(value, ShouldHaveSameTypeAs, &Value{})
+		So(err, ShouldBeNil)
+
+		gvalue, gerr := manager.Get("platform")
+		So(gvalue, ShouldHaveSameTypeAs, &Value{})
+		So(gerr, ShouldBeNil)
+		So(gvalue.Value(), ShouldEqual, "Test Golang.hr Platform")
 	})
 }
