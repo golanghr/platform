@@ -25,7 +25,22 @@ func (v *Value) Value() string {
 
 // Set -
 func (mi *ManagerInstance) Set(key, value string) (*Value, error) {
-	return nil, nil
+	res, err := mi.Kapi.Set(context.Background(), key, value, nil)
+
+	if err != nil {
+		if err == context.Canceled {
+			return nil, fmt.Errorf("Could not set configuration (key: %s) due to context being canceled", key)
+		} else if err == context.DeadlineExceeded {
+			return nil, fmt.Errorf("Could not set configuration (key: %s) due to context deadline being exceeded", key)
+		} else if cerr, ok := err.(*etcdc.ClusterError); ok {
+			return nil, fmt.Errorf("Could not set configuration (key: %s) due to (cluster_err: %s)", key, cerr.Detail())
+		}
+
+		// bad cluster endpoints, which are not etcd servers
+		return nil, fmt.Errorf("Could not set configuration (key: %s) due to (err: %s)", key, err)
+	}
+
+	return &Value{res}, err
 }
 
 // SetTTL -
@@ -36,15 +51,15 @@ func (mi *ManagerInstance) SetTTL(key, value string, ttl time.Duration) (*Value,
 
 	if err != nil {
 		if err == context.Canceled {
-			// ctx is canceled by another routine
+			return nil, fmt.Errorf("Could not set configuration (key: %s) due to context being canceled", key)
 		} else if err == context.DeadlineExceeded {
-			// ctx is attached with a deadline and it exceeded
+			return nil, fmt.Errorf("Could not set configuration (key: %s) due to context deadline being exceeded", key)
 		} else if cerr, ok := err.(*etcdc.ClusterError); ok {
-			// process (cerr.Errors)
-			fmt.Println(cerr)
-		} else {
-			// bad cluster endpoints, which are not etcd servers
+			return nil, fmt.Errorf("Could not set configuration (key: %s) due to (cluster_err: %s)", key, cerr.Detail())
 		}
+
+		// bad cluster endpoints, which are not etcd servers
+		return nil, fmt.Errorf("Could not set configuration (key: %s) due to (err: %s)", key, err)
 	}
 
 	return &Value{res}, err
@@ -56,16 +71,15 @@ func (mi *ManagerInstance) Get(key string) (*Value, error) {
 
 	if err != nil {
 		if err == context.Canceled {
-			// ctx is canceled by another routine
+			return nil, fmt.Errorf("Could not get configuration (key: %s) due to context being canceled", key)
 		} else if err == context.DeadlineExceeded {
-			// ctx is attached with a deadline and it exceeded
+			return nil, fmt.Errorf("Could not get configuration (key: %s) due to context deadline being exceeded", key)
 		} else if cerr, ok := err.(*etcdc.ClusterError); ok {
-			// process (cerr.Errors)
-			fmt.Println(cerr.Detail())
-		} else {
-			// bad cluster endpoints, which are not etcd servers
-
+			return nil, fmt.Errorf("Could not get configuration (key: %s) due to (cluster_err: %s)", key, cerr.Detail())
 		}
+
+		// bad cluster endpoints, which are not etcd servers
+		return nil, fmt.Errorf("Could not get configuration (key: %s) due to (err: %s)", key, err)
 	}
 
 	return &Value{res}, err

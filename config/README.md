@@ -81,7 +81,7 @@ if err != nil {
 #### Example 2 - Enable cURL debugging
 This is useful if there are issues with setting or getting keys from Etcd
 
-```
+```go
 import (
 		etcd "github.com/coreos/etcd/client"
 )
