@@ -71,11 +71,11 @@ func New(cnf map[string]interface{}) (Manager, error) {
 	}
 
 	if !utils.KeyInSlice("folder", cnf) {
-		return nil, fmt.Errorf("Could not find (key: folder) within (config: %q). Plase make sure to read package documentation.", cnf)
+		return nil, fmt.Errorf(ErrorInvalidFolder, cnf)
 	}
 
 	if !utils.KeyInSlice("etcd", cnf) {
-		return nil, fmt.Errorf("Could not find (key: etcd) within (config: %q). Plase make sure to read package documentation.", cnf)
+		return nil, fmt.Errorf(ErrorInvalidEtcdConfig, cnf)
 	}
 
 	autoSyncNodes := true

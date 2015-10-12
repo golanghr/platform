@@ -11,12 +11,12 @@ import (
 	etcdc "github.com/coreos/etcd/client"
 )
 
-// Config -
+// Config - Basic CRUD operations against Etcd configuration path
 type Config interface {
+	Get(key string) (*Value, error)
 	Set(key, value string) (*Value, error)
 	SetTTL(key, value string, ttl time.Duration) (*Value, error)
-
-	Get(key string) (*Value, error)
+	Delete(key string) (*Value, error)
 }
 
 // Manager -

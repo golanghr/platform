@@ -8,4 +8,8 @@ package config
 var (
 	// ErrorInvalidEnv -
 	ErrorInvalidEnv = "Could not find (key: env) within (config: %q). Plase make sure to read package documentation."
+	// ErrorInvalidFolder -
+	ErrorInvalidFolder = "Could not find (key: folder) within (config: %q). Plase make sure to read package documentation."
+	// ErrorInvalidEtcdConfig -
+	ErrorInvalidEtcdConfig = "Could not find (key: etcd) within (config: %q). Plase make sure to read package documentation."
 )

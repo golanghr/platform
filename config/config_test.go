@@ -48,11 +48,24 @@ func TestManagerConfigDefaults(t *testing.T) {
 	})
 
 	Convey("Test If Folder Is Required", t, func() {
+		cnf := map[string]interface{}{
+			"env": testEnv,
+		}
 
+		manager, err := New(cnf)
+		So(err.Error(), ShouldEqual, fmt.Errorf(ErrorInvalidFolder, cnf).Error())
+		So(manager, ShouldBeNil)
 	})
 
 	Convey("Test If Etcd Is Required", t, func() {
+		cnf := map[string]interface{}{
+			"env":    testEnv,
+			"folder": testEtcdFolder,
+		}
 
+		manager, err := New(cnf)
+		So(err.Error(), ShouldEqual, fmt.Errorf(ErrorInvalidEtcdConfig, cnf).Error())
+		So(manager, ShouldBeNil)
 	})
 }
 
@@ -104,8 +117,8 @@ func TestCustomTransport(t *testing.T) {
 	})
 }
 
-// TestAggregation -
-func TestAggregation(t *testing.T) {
+// TestCreateGetDeleteKeys -
+func TestCreateGetDeleteKeys(t *testing.T) {
 	manager, err := getTestManager()
 
 	Convey("Test If SetTTL and Get works", t, func() {
@@ -136,4 +149,20 @@ func TestAggregation(t *testing.T) {
 		So(gerr, ShouldBeNil)
 		So(gvalue.Value(), ShouldEqual, "Test Golang.hr Platform")
 	})
+
+	Convey("Test If Set, Delete and Get works", t, func() {
+		value, err := manager.Set("platform-delete", "Test Golang.hr Platform")
+		So(value, ShouldHaveSameTypeAs, &Value{})
+		So(err, ShouldBeNil)
+
+		dvalue, derr := manager.Delete("platform-delete")
+		So(dvalue, ShouldHaveSameTypeAs, &Value{})
+		So(derr, ShouldBeNil)
+		So(dvalue.Value(), ShouldBeBlank)
+
+		gvalue, gerr := manager.Get("platform-delete")
+		So(gvalue, ShouldHaveSameTypeAs, &Value{})
+		So(gerr, ShouldNotBeNil)
+	})
+
 }
