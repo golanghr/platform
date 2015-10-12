@@ -19,6 +19,7 @@ type ManagerInstance struct {
 	AutoSync   bool
 	Env        string
 	EtcdFolder string
+	Version    string
 
 	Client etcdc.Client
 	Kapi   etcdc.KeysAPI
@@ -46,13 +47,12 @@ func (mi *ManagerInstance) SyncNodes(interval time.Duration) (err error) {
 			}
 		}()
 	}
-
 	return
 }
 
 // GetBasePrefix - Base prefix that will be used with new client api
 func (mi *ManagerInstance) GetBasePrefix() string {
-	return fmt.Sprintf("%s", mi.Env)
+	return fmt.Sprintf("%s/keys/%s/%s", mi.Version, mi.Env, mi.EtcdFolder)
 }
 
 // Init - Will initialize important parts of the package such as etcd api
@@ -92,6 +92,10 @@ func New(cnf map[string]interface{}) (Manager, error) {
 
 	etcdconf := cnf["etcd"].(map[string]interface{})
 
+	if !utils.KeyInSlice("version", etcdconf) {
+		return nil, fmt.Errorf("Could not find (key: etcd-version) within (config: %q). Plase make sure to read package documentation.", etcdconf)
+	}
+
 	var etcdcli etcdc.Client
 	var err error
 
@@ -109,6 +113,7 @@ func New(cnf map[string]interface{}) (Manager, error) {
 		AutoSync:   autoSyncNodes,
 		Env:        utils.GetStringFromMap(cnf, "env"),
 		EtcdFolder: utils.GetStringFromMap(cnf, "folder"),
+		Version:    utils.GetStringFromMap(etcdconf, "version"),
 		Client:     etcdcli,
 	})
 

@@ -29,7 +29,8 @@ func getTestManager() (Manager, error) {
 		"auto_sync":          true,
 		"auto_sync_interval": 10 * time.Second,
 		"etcd": map[string]interface{}{
-			"endpoints":                  []string{"127.0.0.1:2379"},
+			"version":                    "v2",
+			"endpoints":                  []string{"http://localhost:2379"},
 			"transport":                  etcdc.DefaultTransport,
 			"username":                   "",
 			"password":                   "",
@@ -87,7 +88,8 @@ func TestCustomTransport(t *testing.T) {
 			"auto_sync":          true,
 			"auto_sync_interval": 10 * time.Second,
 			"etcd": map[string]interface{}{
-				"endpoints":                  []string{"127.0.0.1:2379"},
+				"version":                    "v2",
+				"endpoints":                  []string{"http://127.0.0.1:2379"},
 				"transport":                  CustomHTTPTransport,
 				"username":                   "",
 				"password":                   "",
@@ -112,8 +114,13 @@ func TestAggregation(t *testing.T) {
 		So(manager, ShouldHaveSameTypeAs, &ManagerInstance{})
 
 		value, err := manager.SetTTL("platform", "Test Golang.hr Platform", 10*time.Second)
-
 		So(value, ShouldHaveSameTypeAs, &Value{})
 		So(err, ShouldBeNil)
+
+		gvalue, gerr := manager.Get("platform")
+		So(gvalue, ShouldHaveSameTypeAs, &Value{})
+		So(gerr, ShouldBeNil)
+		So(gvalue.Value(), ShouldEqual, "Test Golang.hr Platform")
+
 	})
 }

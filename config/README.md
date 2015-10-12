@@ -55,6 +55,8 @@ manager, err := config.New(map[string]interface{}{
 	"auto_sync_interval": 10 * time.Second,
 
 	"etcd": map[string]interface{}{
+		// Etcd API version
+		"version":  								  "v2",
 		// list of etcd endpoints separated by comma
 		"endpoints":                  []string{"127.0.0.1:2379"},
 		// Transport is used by the Client to drive HTTP requests. If not
@@ -74,7 +76,17 @@ if err != nil {
   panic(err)
 }
 
+```
 
+#### Example 2 - Enable cURL debugging
+This is useful if there are issues with setting or getting keys from Etcd
+
+```
+import (
+		etcd "github.com/coreos/etcd/client"
+)
+
+etcd.EnablecURLDebug()
 ```
 
 
