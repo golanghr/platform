@@ -20,7 +20,7 @@ var (
 
 // TestNewEventCreation -
 func TestNewManagerCreation(t *testing.T) {
-	Convey("Test If Manager Instance", t, func() {
+	Convey("Test If Manager/Etcd", t, func() {
 		manager, err := NewManager(map[string]interface{}{
 			"env": testEnv,
 			"etcd": map[string]interface{}{
@@ -33,8 +33,10 @@ func TestNewManagerCreation(t *testing.T) {
 			},
 		})
 
-		So(manager.Etcd(), ShouldNotBeNil)
 		So(err, ShouldBeNil)
+
+		So(manager.Etcd(), ShouldNotBeNil)
 		So(manager, ShouldHaveSameTypeAs, &ManagerInstance{})
 	})
+
 }
