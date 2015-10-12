@@ -23,7 +23,7 @@ var (
 
 // GetManager - Helper
 func getTestManager() (Manager, error) {
-	return NewManager(map[string]interface{}{
+	return New(map[string]interface{}{
 		"env":                testEnv,
 		"folder":             testEtcdFolder,
 		"auto_sync":          true,
@@ -41,7 +41,7 @@ func getTestManager() (Manager, error) {
 // TestManagerConfigDefaults -
 func TestManagerConfigDefaults(t *testing.T) {
 	Convey("Test If Env Is Required", t, func() {
-		manager, err := NewManager(map[string]interface{}{})
+		manager, err := New(map[string]interface{}{})
 		So(err.Error(), ShouldEqual, fmt.Errorf(ErrorInvalidEnv, map[string]interface{}{}).Error())
 		So(manager, ShouldBeNil)
 	})
@@ -81,7 +81,7 @@ func TestCustomTransport(t *testing.T) {
 
 		So(CustomHTTPTransport, ShouldHaveSameTypeAs, &http.Transport{})
 
-		manager, err := NewManager(map[string]interface{}{
+		manager, err := New(map[string]interface{}{
 			"env":                testEnv,
 			"folder":             testEtcdFolder,
 			"auto_sync":          true,

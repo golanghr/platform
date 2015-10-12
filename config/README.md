@@ -39,7 +39,7 @@ Bellow you can find some useful examples of how to use this package
 #### Example 1 - Initializing struct
 
 ```go
-manager, err := NewManager(map[string]interface{}{
+manager, err := config.New(map[string]interface{}{
 	 // Useful for if you wish to have "sandbox", "production" or any other
 	"env": "environment_name",
 

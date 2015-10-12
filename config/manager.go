@@ -62,9 +62,9 @@ func (mi *ManagerInstance) Init() (err error) {
 	return
 }
 
-// NewManager - Return instance of configuration manager. Will return erorr
+// New - Return instance of configuration manager. Will return erorr
 // in case of issues
-func NewManager(cnf map[string]interface{}) (Manager, error) {
+func New(cnf map[string]interface{}) (Manager, error) {
 
 	if !utils.KeyInSlice("env", cnf) {
 		return nil, fmt.Errorf(ErrorInvalidEnv, cnf)
