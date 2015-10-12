@@ -13,8 +13,10 @@ import (
 
 // Config -
 type Config interface {
-	Set(key string, value interface{}, ttl int64) error
-	Get(key string) (Value, error)
+	Set(key, value string) (*Value, error)
+	SetTTL(key, value string, ttl time.Duration) (*Value, error)
+
+	Get(key string) (*Value, error)
 }
 
 // Manager -
@@ -24,4 +26,5 @@ type Manager interface {
 	Etcd() etcdc.Client
 	ShouldAutoSyncNodes() bool
 	SyncNodes(interval time.Duration) error
+	Init() error
 }

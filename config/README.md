@@ -44,26 +44,26 @@ manager, err := NewManager(map[string]interface{}{
 	"env": "environment_name",
 
 	// We use it as project name. Or so, golanghr
-	"folder":                     "folder_name",
+	"folder": "folder_name",
 
 	// Do we want to auto sync existing configuration from the etcd or not
 	"auto_sync": true,
 
-  // The recommended sync interval is 10 seconds to 1 minute, which does
-  // not bring too much overhead to server and makes client catch up the
-  // cluster change in time.
+	// The recommended sync interval is 10 seconds to 1 minute, which does
+	// not bring too much overhead to server and makes client catch up the
+	// cluster change in time.
 	"auto_sync_interval": 10 * time.Second,
 
 	"etcd": map[string]interface{}{
 		// list of etcd endpoints separated by comma
 		"endpoints":                  []string{"127.0.0.1:2379"},
-    // Transport is used by the Client to drive HTTP requests. If not
-    // provided, DefaultTransport will be used.
+		// Transport is used by the Client to drive HTTP requests. If not
+		// provided, DefaultTransport will be used.
 		"transport":                  etcdc.DefaultTransport,
 		// Username specifies the user credential to add as an authorization header
 		"username":                   "",
-    // Password is the password for the specified user to add as an authorization header
-    // to the request.
+		// Password is the password for the specified user to add as an authorization header
+		// to the request.
 		"password":                   "",
 		// set timeout per request to fail fast when the target endpoint is unavailable
 		"header_timeout_per_request": time.Second,

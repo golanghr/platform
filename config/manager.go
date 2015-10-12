@@ -16,13 +16,12 @@ import (
 
 // ManagerInstance - Instance that manages configurations
 type ManagerInstance struct {
-	Config
-
 	AutoSync   bool
 	Env        string
 	EtcdFolder string
 
 	Client etcdc.Client
+	Kapi   etcdc.KeysAPI
 }
 
 // Etcd - Will return instance of CoreOS Etcd
@@ -51,12 +50,24 @@ func (mi *ManagerInstance) SyncNodes(interval time.Duration) (err error) {
 	return
 }
 
+// GetBasePrefix - Base prefix that will be used with new client api
+func (mi *ManagerInstance) GetBasePrefix() string {
+	return fmt.Sprintf("%s", mi.Env)
+}
+
+// Init - Will initialize important parts of the package such as etcd api
+func (mi *ManagerInstance) Init() (err error) {
+	mi.Kapi = etcdc.NewKeysAPIWithPrefix(mi.Client, mi.GetBasePrefix())
+
+	return
+}
+
 // NewManager - Return instance of configuration manager. Will return erorr
 // in case of issues
 func NewManager(cnf map[string]interface{}) (Manager, error) {
 
 	if !utils.KeyInSlice("env", cnf) {
-		return nil, fmt.Errorf("Could not find (key: env) within (config: %q). Plase make sure to read package documentation.", cnf)
+		return nil, fmt.Errorf(ErrorInvalidEnv, cnf)
 	}
 
 	if !utils.KeyInSlice("folder", cnf) {
@@ -100,6 +111,10 @@ func NewManager(cnf map[string]interface{}) (Manager, error) {
 		EtcdFolder: utils.GetStringFromMap(cnf, "folder"),
 		Client:     etcdcli,
 	})
+
+	if err := manager.Init(); err != nil {
+		return manager, err
+	}
 
 	// This will spawn goroutine ...
 	if err := manager.SyncNodes(autoSyncInterval); err != nil {

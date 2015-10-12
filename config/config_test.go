@@ -6,6 +6,7 @@
 package config
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"testing"
@@ -20,35 +21,53 @@ var (
 	testEtcdFolder = "golanghr-test"
 )
 
-func TestManagerConfigDefaults(t *testing.T) {
+// GetManager - Helper
+func getTestManager() (Manager, error) {
+	return NewManager(map[string]interface{}{
+		"env":                testEnv,
+		"folder":             testEtcdFolder,
+		"auto_sync":          true,
+		"auto_sync_interval": 10 * time.Second,
+		"etcd": map[string]interface{}{
+			"endpoints":                  []string{"127.0.0.1:2379"},
+			"transport":                  etcdc.DefaultTransport,
+			"username":                   "",
+			"password":                   "",
+			"header_timeout_per_request": time.Second,
+		},
+	})
+}
 
+// TestManagerConfigDefaults -
+func TestManagerConfigDefaults(t *testing.T) {
+	Convey("Test If Env Is Required", t, func() {
+		manager, err := NewManager(map[string]interface{}{})
+		So(err.Error(), ShouldEqual, fmt.Errorf(ErrorInvalidEnv, map[string]interface{}{}).Error())
+		So(manager, ShouldBeNil)
+	})
+
+	Convey("Test If Folder Is Required", t, func() {
+
+	})
+
+	Convey("Test If Etcd Is Required", t, func() {
+
+	})
 }
 
 // TestNewEventCreation -
 func TestNewManagerCreation(t *testing.T) {
 	Convey("Test If Manager/Etcd", t, func() {
-		manager, err := NewManager(map[string]interface{}{
-			"env":                testEnv,
-			"folder":             testEtcdFolder,
-			"auto_sync":          true,
-			"auto_sync_interval": 10 * time.Second,
-			"etcd": map[string]interface{}{
-				"endpoints":                  []string{"127.0.0.1:2379"},
-				"transport":                  etcdc.DefaultTransport,
-				"username":                   "",
-				"password":                   "",
-				"header_timeout_per_request": time.Second,
-			},
-		})
+		manager, err := getTestManager()
 
 		So(err, ShouldBeNil)
-
 		So(manager.Etcd(), ShouldNotBeNil)
 		So(manager, ShouldHaveSameTypeAs, &ManagerInstance{})
 	})
 
 }
 
+// TestCustomTransport -
 func TestCustomTransport(t *testing.T) {
 	Convey("Test If Custom Cancellable Transport", t, func() {
 		var CustomHTTPTransport etcdc.CancelableTransport = &http.Transport{
@@ -80,5 +99,21 @@ func TestCustomTransport(t *testing.T) {
 
 		So(manager.Etcd(), ShouldNotBeNil)
 		So(manager, ShouldHaveSameTypeAs, &ManagerInstance{})
+	})
+}
+
+// TestAggregation -
+func TestAggregation(t *testing.T) {
+	Convey("Test If Custom Cancellable Transport", t, func() {
+		manager, err := getTestManager()
+
+		So(err, ShouldBeNil)
+		So(manager.Etcd(), ShouldNotBeNil)
+		So(manager, ShouldHaveSameTypeAs, &ManagerInstance{})
+
+		value, err := manager.SetTTL("platform", "Test Golang.hr Platform", 10*time.Second)
+
+		So(value, ShouldHaveSameTypeAs, &Value{})
+		So(err, ShouldBeNil)
 	})
 }
