@@ -1,6 +1,8 @@
 # [Golang.hr] Platform configuration package
 Base configuration package for [Golang.hr Platform]. Package is designed to be used with [etcd].
 
+*NOTICE: Package under active development. No ETA atm...*
+
 #### Why Etcd?
 
 [etcd] we will just copy out what they said without much of complications...
@@ -21,6 +23,10 @@ You can see more at  [etcd github]
 - Saving and updating configuration key/values directly on [etcd] instance
 - Auto reload configuration once it's changed (watching)
 
+*NOTICE: This package wrapper is designed to manage configuration. If you wish
+to manage roles or anything else you will need to use custom logic. You can retrieve
+Etcd client by ```manager.Etcd()```*
+
 ### Prerequisites
 You will need to have fully functional [etcd] service setup and accessible by www.
 
@@ -34,7 +40,10 @@ Bellow you can find some useful examples of how to use this package
 
 ```go
 manager, err := NewManager(map[string]interface{}{
-	"env": "environment_name", // Useful for if you wish to have "sandbox", "production" or any other
+	 // Useful for if you wish to have "sandbox", "production" or any other
+	"env": "environment_name",
+	// Do we want to auto sync existing configuration from the etcd or not
+	"auto_sync": true,
 	"etcd": map[string]interface{}{
 	    // We use it as project name. Or so, golanghr
 		"folder":                     "folder_name",

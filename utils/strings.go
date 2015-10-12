@@ -7,8 +7,7 @@ package utils
 
 import "time"
 
-// StringInSlice - Will check if string in list.
-// This is equivalent to python if x in []
+// StringInSlice - Will check if string in list. This is equivalent to python if x in []
 func StringInSlice(str string, list []string) bool {
 	for _, value := range list {
 		if value == str {
@@ -18,8 +17,7 @@ func StringInSlice(str string, list []string) bool {
 	return false
 }
 
-// KeyInSlice - Will check if key in list.
-// This is equivalent to python if x in []
+// KeyInSlice - Will check if key in list. This is equivalent to python if x in []
 func KeyInSlice(str string, list map[string]interface{}) bool {
 	for key, _ := range list {
 		if key == str {
@@ -29,17 +27,22 @@ func KeyInSlice(str string, list map[string]interface{}) bool {
 	return false
 }
 
-// GetString - Will return string from key-value based storage
-func GetString(store map[string]interface{}, key string) string {
+// GetStringFromMap - Will return string value from key-value based storage
+func GetStringFromMap(store map[string]interface{}, key string) string {
 	return store[key].(string)
 }
 
-// GetStrings - Will return strings from key-value based storage
-func GetStrings(store map[string]interface{}, key string) []string {
+// GetStringsFromMap - Will return strings value from key-value based storage
+func GetStringsFromMap(store map[string]interface{}, key string) []string {
 	return store[key].([]string)
 }
 
-// GetDuration - Will return time.Duration from key-value based storage
-func GetDuration(store map[string]interface{}, key string) time.Duration {
+// GetDurationFromMap - Will return time.Duration value from key-value based storage
+func GetDurationFromMap(store map[string]interface{}, key string) time.Duration {
 	return store[key].(time.Duration)
+}
+
+// GetBoolFromMap - Will return bool value from key-value based storage
+func GetBoolFromMap(store map[string]interface{}, key string) bool {
+	return store[key].(bool)
 }

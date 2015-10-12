@@ -6,6 +6,8 @@
 package config
 
 import (
+	"time"
+
 	etcdc "github.com/coreos/etcd/client"
 )
 
@@ -17,5 +19,9 @@ type Config interface {
 
 // Manager -
 type Manager interface {
+	Config
+
 	Etcd() etcdc.Client
+	ShouldAutoSyncNodes() bool
+	SyncNodes(interval time.Duration) error
 }
