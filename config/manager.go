@@ -59,6 +59,10 @@ func NewManager(cnf map[string]interface{}) (Manager, error) {
 		return nil, fmt.Errorf("Could not find (key: env) within (config: %q). Plase make sure to read package documentation.", cnf)
 	}
 
+	if !utils.KeyInSlice("folder", cnf) {
+		return nil, fmt.Errorf("Could not find (key: folder) within (config: %q). Plase make sure to read package documentation.", cnf)
+	}
+
 	if !utils.KeyInSlice("etcd", cnf) {
 		return nil, fmt.Errorf("Could not find (key: etcd) within (config: %q). Plase make sure to read package documentation.", cnf)
 	}
@@ -93,7 +97,7 @@ func NewManager(cnf map[string]interface{}) (Manager, error) {
 	manager := Manager(&ManagerInstance{
 		AutoSync:   autoSyncNodes,
 		Env:        utils.GetStringFromMap(cnf, "env"),
-		EtcdFolder: utils.GetStringFromMap(etcdconf, "folder"),
+		EtcdFolder: utils.GetStringFromMap(cnf, "folder"),
 		Client:     etcdcli,
 	})
 

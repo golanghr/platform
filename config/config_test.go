@@ -29,10 +29,10 @@ func TestNewManagerCreation(t *testing.T) {
 	Convey("Test If Manager/Etcd", t, func() {
 		manager, err := NewManager(map[string]interface{}{
 			"env":                testEnv,
+			"folder":             testEtcdFolder,
 			"auto_sync":          true,
 			"auto_sync_interval": 10 * time.Second,
 			"etcd": map[string]interface{}{
-				"folder":                     testEtcdFolder,
 				"endpoints":                  []string{"127.0.0.1:2379"},
 				"transport":                  etcdc.DefaultTransport,
 				"username":                   "",
@@ -64,10 +64,10 @@ func TestCustomTransport(t *testing.T) {
 
 		manager, err := NewManager(map[string]interface{}{
 			"env":                testEnv,
+			"folder":             testEtcdFolder,
 			"auto_sync":          true,
 			"auto_sync_interval": 10 * time.Second,
 			"etcd": map[string]interface{}{
-				"folder":                     testEtcdFolder,
 				"endpoints":                  []string{"127.0.0.1:2379"},
 				"transport":                  CustomHTTPTransport,
 				"username":                   "",
