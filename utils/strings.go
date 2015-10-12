@@ -29,20 +29,36 @@ func KeyInSlice(str string, list map[string]interface{}) bool {
 
 // GetStringFromMap - Will return string value from key-value based storage
 func GetStringFromMap(store map[string]interface{}, key string) string {
+	if !KeyInSlice(key, store) {
+		return ""
+	}
+
 	return store[key].(string)
 }
 
 // GetStringsFromMap - Will return strings value from key-value based storage
 func GetStringsFromMap(store map[string]interface{}, key string) []string {
+	if !KeyInSlice(key, store) {
+		return nil
+	}
+
 	return store[key].([]string)
 }
 
 // GetDurationFromMap - Will return time.Duration value from key-value based storage
 func GetDurationFromMap(store map[string]interface{}, key string) time.Duration {
+	if !KeyInSlice(key, store) {
+		return 0
+	}
+
 	return store[key].(time.Duration)
 }
 
 // GetBoolFromMap - Will return bool value from key-value based storage
 func GetBoolFromMap(store map[string]interface{}, key string) bool {
+	if !KeyInSlice(key, store) {
+		return false
+	}
+
 	return store[key].(bool)
 }
