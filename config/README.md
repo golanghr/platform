@@ -31,7 +31,22 @@ Etcd client by ```manager.Etcd()```**
 You will need to have fully functional [etcd] service setup and accessible by www.
 
 ### Installation
-TBD
+
+First you'll have to fetch platform
+
+```sh
+go get -u github.com/golanghr/platform
+```
+
+than you'll have to include it in your go script
+
+```go
+import (
+	"github.com/golanghr/platform/config"
+)
+```
+
+and than checkout examples :)
 
 ### Examples
 Bellow you can find some useful examples of how to use this package
