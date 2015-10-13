@@ -12,6 +12,34 @@ The core API is unlikely to change much but please version control your Logrus
 to make sure you aren't fetching latest master on every build.
 ```
 
+### Example 1 - Running under debug level
+
+```go
+// Package main ...
+package main
+
+import (
+	"github.com/Sirupsen/logrus"
+	"github.com/golanghr/platform/logging"
+)
+
+var (
+	log logging.Logging
+)
+
+func init() {
+	log = logging.New(map[string]interface{}{
+		"formatter": "text",
+		"level":     logrus.DebugLevel,
+	})
+
+}
+
+func main() {
+	log.WithFields(logrus.Fields{"service": "golang.hr"}).Debug("Example logging")
+}
+```
+
 ### License
 
 ```
