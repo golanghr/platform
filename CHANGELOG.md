@@ -7,4 +7,6 @@
 - Adding basic concurrency helpers utils/concurrency.go:(
     GetProcessCount, GetConcurrencyCount
   ) including tests
--
+- Adding basic environment helpers utils/helpers.go:(
+    GetFromEnvOr
+  ) including tests

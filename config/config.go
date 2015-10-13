@@ -7,6 +7,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	etcdc "github.com/coreos/etcd/client"
@@ -86,6 +87,31 @@ func (mi *ManagerInstance) Get(key string) (*Value, error) {
 
 		// bad cluster endpoints, which are not etcd servers
 		return nil, fmt.Errorf("Could not get configuration (key: %s) due to (err: %s)", key, err)
+	}
+
+	return &Value{res}, err
+}
+
+// GetOrSet - Will attempt to retreive key from etcd and if one is not there, will
+// attempt to create it
+func (mi *ManagerInstance) GetOrSet(key, defaults string) (*Value, error) {
+	res, err := mi.Kapi.Get(context.Background(), key, &etcdc.GetOptions{Quorum: true})
+
+	if err != nil {
+		if err == context.Canceled {
+			return nil, fmt.Errorf("Could not get configuration (key: %s) due to context being canceled", key)
+		} else if err == context.DeadlineExceeded {
+			return nil, fmt.Errorf("Could not get configuration (key: %s) due to context deadline being exceeded", key)
+		} else if cerr, ok := err.(*etcdc.ClusterError); ok {
+			return nil, fmt.Errorf("Could not get configuration (key: %s) due to (cluster_err: %s)", key, cerr.Detail())
+		}
+
+		if !strings.Contains(err.Error(), "Key not found") {
+			// bad cluster endpoints, which are not etcd servers
+			return nil, fmt.Errorf("Could not get configuration (key: %s) due to (err: %s)", key, err)
+		}
+
+		return mi.Set(key, defaults)
 	}
 
 	return &Value{res}, err

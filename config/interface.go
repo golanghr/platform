@@ -14,6 +14,7 @@ import (
 // Config - Basic CRUD operations against Etcd configuration path
 type Config interface {
 	Get(key string) (*Value, error)
+	GetOrSet(key, defaults string) (*Value, error)
 	Set(key, value string) (*Value, error)
 	SetTTL(key, value string, ttl time.Duration) (*Value, error)
 	Delete(key string) (*Value, error)

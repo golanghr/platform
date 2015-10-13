@@ -165,4 +165,10 @@ func TestCreateGetDeleteKeys(t *testing.T) {
 		So(gerr, ShouldNotBeNil)
 	})
 
+	Convey("Test If GetOrSet works", t, func() {
+		value, err := manager.GetOrSet("platform-get-or-set", "Test Golang.hr Platform GetOrSet")
+		So(value, ShouldHaveSameTypeAs, &Value{})
+		So(err, ShouldBeNil)
+		So(value.Value(), ShouldEqual, "Test Golang.hr Platform GetOrSet")
+	})
 }
