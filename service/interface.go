@@ -6,4 +6,8 @@
 package service
 
 // Service -
-type Service interface{}
+type Service interface {
+	Name() string
+	Description() string
+	Version() string
+}

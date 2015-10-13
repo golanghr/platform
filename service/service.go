@@ -50,7 +50,7 @@ func (i *Instance) Version() string {
 
 // New -
 func New(cnf config.Manager) (s Service, err error) {
-	s = Service(Instance{
+	s = Service(&Instance{
 		Config: cnf,
 	})
 
