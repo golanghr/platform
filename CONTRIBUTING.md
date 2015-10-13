@@ -33,5 +33,5 @@ the MIT-style license found in the LICENSE file.
 [Golang.hr Platform]: <https://github.com/golanghr/platform>
 [filing an issue]: <https://github.com/golanghr/platform/issue/new>
 
-[Golang.hr Slack] <http://slack.golang.hr>
-[Golang.hr Facebook] <https://www.facebook.com/groups/golanghr/>
+[Golang.hr Slack]: <http://slack.golang.hr>
+[Golang.hr Facebook]: <https://www.facebook.com/groups/golanghr/>
