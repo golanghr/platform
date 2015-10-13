@@ -12,12 +12,17 @@ type Instance struct {
 	Config config.Manager
 }
 
+// GetConfig - Will return back configuration manager
+func (i *Instance) GetConfig() config.Manager {
+	return i.Config
+}
+
 // Name - Will return name of the service
 func (i *Instance) Name() string {
 	var value *config.Value
 	var err error
 
-	if value, err = i.Config.Get("service-name"); err != nil {
+	if value, err = i.Config.Get(ServiceNameTag); err != nil {
 		return ""
 	}
 
@@ -29,7 +34,7 @@ func (i *Instance) Description() string {
 	var value *config.Value
 	var err error
 
-	if value, err = i.Config.Get("service-description"); err != nil {
+	if value, err = i.Config.Get(ServiceDescriptionTag); err != nil {
 		return ""
 	}
 
@@ -41,7 +46,7 @@ func (i *Instance) Version() string {
 	var value *config.Value
 	var err error
 
-	if value, err = i.Config.Get("service-version"); err != nil {
+	if value, err = i.Config.Get(ServiceVersionTag); err != nil {
 		return ""
 	}
 
@@ -54,15 +59,15 @@ func New(cnf config.Manager) (s Service, err error) {
 		Config: cnf,
 	})
 
-	if _, err = cnf.Get("service-name"); err != nil {
+	if _, err = cnf.Get(ServiceNameTag); err != nil {
 		return
 	}
 
-	if _, err = cnf.Get("service-description"); err != nil {
+	if _, err = cnf.Get(ServiceDescriptionTag); err != nil {
 		return
 	}
 
-	if _, err = cnf.Get("service-version"); err != nil {
+	if _, err = cnf.Get(ServiceVersionTag); err != nil {
 		return
 	}
 

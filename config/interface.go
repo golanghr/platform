@@ -15,6 +15,8 @@ import (
 type Config interface {
 	Get(key string) (*Value, error)
 	GetOrSet(key, defaults string) (*Value, error)
+	GetBool(key string) (bool, error)
+
 	Set(key, value string) (*Value, error)
 	SetTTL(key, value string, ttl time.Duration) (*Value, error)
 	Delete(key string) (*Value, error)

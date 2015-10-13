@@ -5,9 +5,12 @@
 // Package service ...
 package service
 
+import "github.com/golanghr/platform/config"
+
 // Service -
 type Service interface {
 	Name() string
 	Description() string
 	Version() string
+	GetConfig() config.Manager
 }
