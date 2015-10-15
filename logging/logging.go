@@ -6,6 +6,8 @@
 package logging
 
 import (
+	"io"
+
 	"github.com/Sirupsen/logrus"
 	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
 	"github.com/golanghr/platform/utils"
@@ -43,4 +45,9 @@ func New(config map[string]interface{}) Logging {
 	}
 
 	return logger
+}
+
+// SetOutput of logger
+func (l *Logging) SetOutput(w io.Writer) {
+	l.Logger.Out = w
 }

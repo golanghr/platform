@@ -6,8 +6,10 @@
 package logging
 
 import (
+	"bytes"
 	"testing"
 
+	"github.com/MatejB/reactLog"
 	"github.com/Sirupsen/logrus"
 	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
 	. "github.com/smartystreets/goconvey/convey"
@@ -45,5 +47,29 @@ func TestNewLoggingInstance(t *testing.T) {
 		})
 
 		So(log.Formatter, ShouldHaveSameTypeAs, &logstashf.LogstashFormatter{})
+	})
+}
+
+func TestMiddlewareIntegration(t *testing.T) {
+	generalLogContainer := &bytes.Buffer{}
+	logContainerForUser107 := &bytes.Buffer{}
+
+	rlog := reactLog.New(generalLogContainer)
+	rlog.AddReaction("user ID 107", &reactLog.Redirect{logContainerForUser107})
+
+	log := New(map[string]interface{}{
+		"formatter": "text",
+	})
+
+	log.SetOutput(rlog)
+
+	log.Info("This is normal log")
+	log.Info("This is log that concers user ID 107 with important data")
+
+	Convey("Test logger middleware redirect", t, func() {
+		So(generalLogContainer.String(), ShouldContainSubstring, "This is normal log")
+	})
+	Convey("Test logger middleware redirect", t, func() {
+		So(logContainerForUser107.String(), ShouldContainSubstring, "This is log that concers user ID 107 with important data")
 	})
 }
