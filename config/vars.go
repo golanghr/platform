@@ -2,13 +2,7 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-// Package server ...
-package server
+// Package config ...
+package config
 
-// Server -
-type Server interface {
-	Start(chan string) error
-	Stop() error
-
-	RunOnAddr() error
-}
+var ()

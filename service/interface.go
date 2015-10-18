@@ -5,12 +5,18 @@
 // Package service ...
 package service
 
-import "github.com/golanghr/platform/config"
+import (
+	"github.com/golanghr/platform/config"
+	"github.com/golanghr/platform/logging"
+)
 
 // Service -
 type Service interface {
 	Name() string
 	Description() string
 	Version() string
+
 	GetConfig() config.Manager
+	GetLogger() logging.Logging
+	GetQuitChan() chan bool
 }

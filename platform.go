@@ -2,11 +2,9 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-// Package server ...
-package server
+// Package platform ...
+package main
 
-const (
-	ServerHttpTls = "server-http-tls"
+func main() {
 
-	STARTING = "starting"
-)
+}

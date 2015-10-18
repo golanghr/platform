@@ -5,16 +5,32 @@
 // Package service ...
 package service
 
-import "github.com/golanghr/platform/config"
+import (
+	"github.com/golanghr/platform/config"
+	"github.com/golanghr/platform/logging"
+)
 
 // Instance - Service instance wrapper
 type Instance struct {
 	Config config.Manager
+	Logger logging.Logging
+
+	Quit chan bool
+}
+
+// GetQuitChan -
+func (i *Instance) GetQuitChan() chan bool {
+	return i.Quit
 }
 
 // GetConfig - Will return back configuration manager
 func (i *Instance) GetConfig() config.Manager {
 	return i.Config
+}
+
+// GetLogger -
+func (i *Instance) GetLogger() logging.Logging {
+	return i.Logger
 }
 
 // Name - Will return name of the service
@@ -54,20 +70,22 @@ func (i *Instance) Version() string {
 }
 
 // New -
-func New(cnf config.Manager) (s Service, err error) {
+func New(cnf config.Manager, logger logging.Logging) (s Service, err error) {
 	s = Service(&Instance{
 		Config: cnf,
+		Logger: logger,
+		Quit:   make(chan bool),
 	})
 
-	if _, err = cnf.Get(ServiceNameTag); err != nil {
+	if err = cnf.Exists(ServiceNameTag); err != nil {
 		return
 	}
 
-	if _, err = cnf.Get(ServiceDescriptionTag); err != nil {
+	if err = cnf.Exists(ServiceDescriptionTag); err != nil {
 		return
 	}
 
-	if _, err = cnf.Get(ServiceVersionTag); err != nil {
+	if err = cnf.Exists(ServiceVersionTag); err != nil {
 		return
 	}
 

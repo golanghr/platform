@@ -172,3 +172,8 @@ func TestCreateGetDeleteKeys(t *testing.T) {
 		So(value.Value(), ShouldEqual, "Test Golang.hr Platform GetOrSet")
 	})
 }
+
+// TestHelpers -
+func TestHelpers(t *testing.T) {
+
+}

@@ -7,10 +7,11 @@
 # platform
 Golang.hr microplatform base
 
+** UNDER HEAVY DEVELOPMENT **
 
 ### Supported Packages
 
 -
 
 
-[Configuration Package]: https://github.com/golanghr/platform/tree/master/config
+[Configuration Package]: <https://github.com/golanghr/platform/tree/master/config>

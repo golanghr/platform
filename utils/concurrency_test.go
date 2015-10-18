@@ -23,14 +23,3 @@ func TestGetProcessCount(t *testing.T) {
 		So(GetProcessCount("GHR_TEST_PROCESS_COUNT"), ShouldEqual, 4)
 	})
 }
-
-func TestGetConcurrencyCount(t *testing.T) {
-	Convey("Test Get Concurrency Count Without Environment Variables", t, func() {
-		So(GetConcurrencyCount(""), ShouldEqual, runtime.NumCPU())
-	})
-
-	Convey("Test Get Concurrency Count With Environment Variables", t, func() {
-		os.Setenv("GHR_TEST_CONCURRENCY_COUNT", "5")
-		So(GetConcurrencyCount("GHR_TEST_CONCURRENCY_COUNT"), ShouldEqual, 5)
-	})
-}

@@ -117,6 +117,50 @@ func (mi *ManagerInstance) GetOrSet(key, defaults string) (*Value, error) {
 	return &Value{res}, err
 }
 
+// Exists - Will check if key exists or not
+func (mi *ManagerInstance) Exists(key string) error {
+	if _, err := mi.Get(key); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// EnsureSet - Will ensure that key is set. If it's not set, it will set key with provided defaults.
+func (mi *ManagerInstance) EnsureSet(key, defaults string) error {
+	if _, err := mi.Kapi.Get(context.Background(), key, &etcdc.GetOptions{Quorum: true}); err != nil {
+		if err == context.Canceled {
+			return fmt.Errorf("Could not get configuration (key: %s) due to context being canceled", key)
+		} else if err == context.DeadlineExceeded {
+			return fmt.Errorf("Could not get configuration (key: %s) due to context deadline being exceeded", key)
+		} else if cerr, ok := err.(*etcdc.ClusterError); ok {
+			return fmt.Errorf("Could not get configuration (key: %s) due to (cluster_err: %s)", key, cerr.Detail())
+		}
+
+		if !strings.Contains(err.Error(), "Key not found") {
+			// bad cluster endpoints, which are not etcd servers
+			return fmt.Errorf("Could not get configuration (key: %s) due to (err: %s)", key, err)
+		}
+
+		if _, err := mi.Set(key, defaults); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// EnsureSetMany - Will recursively go over map of strings and ensure each of them is set.
+func (mi *ManagerInstance) EnsureSetMany(cnf map[string]string) error {
+	for key, value := range cnf {
+		if err := mi.EnsureSet(key, value); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // Delete - Will delete etcd key. If there are no keys, will return error
 func (mi *ManagerInstance) Delete(key string) (*Value, error) {
 	res, err := mi.Kapi.Delete(context.Background(), key, &etcdc.DeleteOptions{Recursive: true})

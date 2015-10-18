@@ -28,21 +28,3 @@ func GetProcessCount(env string) int {
 
 	return int(pc)
 }
-
-// GetConcurrencyCount - Get Process count defined by ENV or by NumCPU()
-func GetConcurrencyCount(env string) int {
-
-	envName := "GH_GO_MAX_CONCURRENCY"
-
-	if env != "" {
-		envName = env
-	}
-
-	pc, err := strconv.Atoi(os.Getenv(envName))
-
-	if err != nil {
-		pc = runtime.NumCPU()
-	}
-
-	return int(pc)
-}
