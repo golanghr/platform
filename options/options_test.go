@@ -81,6 +81,10 @@ func TestOptions(t *testing.T) {
 		So(opt.Get("option_float"), ShouldBeNil)
 	})
 
+	Convey("Should be type of string", t, func() {
+		So(opt.Get("option_string").String(), ShouldHaveSameTypeAs, "")
+	})
+
 	Convey("Should be type of bool", t, func() {
 		So(opt.Get("option_bool").Bool(), ShouldHaveSameTypeAs, false)
 	})
