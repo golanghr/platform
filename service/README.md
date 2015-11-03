@@ -1,6 +1,17 @@
 # [Golang.hr] Platform service package
 Base service package for [Golang.hr Platform].
 
+**NOTICE: Package under active development. No ETA atm...**
+
+### Design Concept / TODO
+
+  - [] Should have some service defaults such as name, version, description.
+  - [] Should have router. Router in this case should support [gRPC] and HTTP adapters.
+  Point is to have one handler definition that is accessible by various protocols
+  - [] Should accept options
+  - [] Should extend manager
+  - []
+
 ### License
 
 ```
