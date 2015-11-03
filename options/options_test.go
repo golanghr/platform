@@ -10,8 +10,8 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestOptions(t *testing.T) {
-	opt, err := New(map[string]interface{}{
+func TestOptionsBaseAdapter(t *testing.T) {
+	opt, err := New("base", map[string]interface{}{
 		"option_string":     "test",
 		"option_int":        22,
 		"option_uint":       uint(22),
@@ -31,7 +31,7 @@ func TestOptions(t *testing.T) {
 	})
 
 	Convey("Should return proper options without any errors", t, func() {
-		So(*opt, ShouldHaveSameTypeAs, Options{})
+		So(opt, ShouldHaveSameTypeAs, &AdapterBase{})
 		So(err, ShouldBeNil)
 	})
 
