@@ -10,14 +10,22 @@ import (
 	"github.com/MatejB/reactLog"
 	"github.com/Sirupsen/logrus"
 	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
+	"github.com/golanghr/platform/options"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestNewLoggingInstance(t *testing.T) {
-	log := New(map[string]interface{}{
+
+	opts, err := options.New(map[string]interface{}{
 		"formatter": "text",
 		"level":     logrus.FatalLevel,
 	})
+
+	Convey("Logging options should be successfully created without any errors", t, func() {
+		So(err, ShouldBeNil)
+	})
+
+	log := New(opts)
 
 	Convey("Test Required Logging Type", t, func() {
 		So(log, ShouldHaveSameTypeAs, Logging{})
@@ -32,18 +40,25 @@ func TestNewLoggingInstance(t *testing.T) {
 	})
 
 	Convey("Test Logger JSON Formatter", t, func() {
-		log := New(map[string]interface{}{
-			"formatter": "json",
-		})
 
+		opts, err := options.New(map[string]interface{}{
+			"formatter": "json",
+			"level":     logrus.FatalLevel,
+		})
+		So(err, ShouldBeNil)
+
+		log := New(opts)
 		So(log.Formatter, ShouldHaveSameTypeAs, &logrus.JSONFormatter{})
 	})
 
 	Convey("Test Logger Logstash Formatter", t, func() {
-		log := New(map[string]interface{}{
+		opts, err := options.New(map[string]interface{}{
 			"formatter": "logstash",
+			"level":     logrus.FatalLevel,
 		})
+		So(err, ShouldBeNil)
 
+		log := New(opts)
 		So(log.Formatter, ShouldHaveSameTypeAs, &logstashf.LogstashFormatter{})
 	})
 }
@@ -55,9 +70,16 @@ func TestMiddlewareIntegration(t *testing.T) {
 	rlog := reactLog.New(generalLogContainer)
 	rlog.AddReaction("user ID 107", &reactLog.Redirect{logContainerForUser107})
 
-	log := New(map[string]interface{}{
+	opts, err := options.New(map[string]interface{}{
 		"formatter": "text",
+		"level":     logrus.FatalLevel,
 	})
+
+	Convey("Middleware logging options should be successfully created without any errors", t, func() {
+		So(err, ShouldBeNil)
+	})
+
+	log := New(opts)
 
 	log.SetOutput(rlog)
 
@@ -67,6 +89,7 @@ func TestMiddlewareIntegration(t *testing.T) {
 	Convey("Test logger middleware redirect", t, func() {
 		So(generalLogContainer.String(), ShouldContainSubstring, "This is normal log")
 	})
+
 	Convey("Test logger middleware redirect", t, func() {
 		So(logContainerForUser107.String(), ShouldContainSubstring, "This is log that concers user ID 107 with important data")
 	})

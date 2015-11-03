@@ -88,3 +88,8 @@ func (o *Option) Complex128() complex128 {
 func (o *Option) String() string {
 	return o.Value.(string)
 }
+
+// Interface - Will return option value as interface
+func (o *Option) Interface() interface{} {
+	return o.Value
+}

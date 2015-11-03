@@ -10,25 +10,25 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
-	"github.com/golanghr/platform/utils"
+	"github.com/golanghr/platform/options"
 )
 
 // Logging - A small wrapper around logrus.Logger
 type Logging struct {
 	*logrus.Logger
-	Config map[string]interface{}
+	*options.Options
 }
 
 // New - Will create new Logging instance
-func New(config map[string]interface{}) Logging {
+func New(opts *options.Options) Logging {
 
 	logger := Logging{
-		Logger: logrus.New(),
-		Config: config,
+		Logger:  logrus.New(),
+		Options: opts,
 	}
 
-	if utils.KeyInSlice("formatter", config) {
-		switch config["formatter"].(string) {
+	if opts.Exists("formatter") {
+		switch opts.Get("formatter").String() {
 		case "text":
 			logger.Formatter = new(logrus.TextFormatter)
 		case "json":
@@ -40,8 +40,8 @@ func New(config map[string]interface{}) Logging {
 		}
 	}
 
-	if utils.KeyInSlice("level", config) {
-		logger.Level = config["level"].(logrus.Level)
+	if opts.Exists("level") {
+		logger.Level = opts.Get("level").Interface().(logrus.Level)
 	}
 
 	return logger
