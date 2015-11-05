@@ -4,6 +4,12 @@
 // license that can be found in the LICENSE file.
 package options
 
+// Option - Option container and type helper
+type Option struct {
+	Key   string      `option:"key"`
+	Value interface{} `option:"value"`
+}
+
 // Bool - Will return option value as bool
 func (o *Option) Bool() bool {
 	return o.Value.(bool)

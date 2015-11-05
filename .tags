@@ -1,7 +1,0 @@
-key	/Users/0x19/gocode/src/github.com/golanghr/platform/server/context.go	/^type key int$/;"	type	line:14
-GetContextFromRequest	/Users/0x19/gocode/src/github.com/golanghr/platform/server/context.go	/^func (h *Handler) GetContextFromRequest(req *http.Request) *context.Context {$/;"	func	line:20
-GetRequestIDFromContext	/Users/0x19/gocode/src/github.com/golanghr/platform/server/context.go	/^func (h *Handler) GetRequestIDFromContext(ctx context.Context) string {$/;"	func	line:27
-Handler	/Users/0x19/gocode/src/github.com/golanghr/platform/server/handler.go	/^type Handler struct {$/;"	type	line:16
-ServeHTTP	/Users/0x19/gocode/src/github.com/golanghr/platform/server/handler.go	/^func (h *Handler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {$/;"	func	line:24
-NewHandler	/Users/0x19/gocode/src/github.com/golanghr/platform/server/handler.go	/^func NewHandler() *Handler {$/;"	func	line:44
-NewHandlerWithContext	/Users/0x19/gocode/src/github.com/golanghr/platform/server/handler.go	/^func NewHandlerWithContext(ctx context.Context) *Handler {$/;"	func	line:49

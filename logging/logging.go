@@ -16,11 +16,11 @@ import (
 // Logging - A small wrapper around logrus.Logger
 type Logging struct {
 	*logrus.Logger
-	*options.Options
+	options.Options
 }
 
 // New - Will create new Logging instance
-func New(opts *options.Options) Logging {
+func New(opts options.Options) Logging {
 
 	logger := Logging{
 		Logger:  logrus.New(),

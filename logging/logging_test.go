@@ -10,13 +10,14 @@ import (
 	"github.com/MatejB/reactLog"
 	"github.com/Sirupsen/logrus"
 	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
+
 	"github.com/golanghr/platform/options"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestNewLoggingInstance(t *testing.T) {
 
-	opts, err := options.New(map[string]interface{}{
+	opts, err := options.New(options.BaseAdapter, map[string]interface{}{
 		"formatter": "text",
 		"level":     logrus.FatalLevel,
 	})
@@ -41,7 +42,7 @@ func TestNewLoggingInstance(t *testing.T) {
 
 	Convey("Test Logger JSON Formatter", t, func() {
 
-		opts, err := options.New(map[string]interface{}{
+		opts, err := options.New(options.BaseAdapter, map[string]interface{}{
 			"formatter": "json",
 			"level":     logrus.FatalLevel,
 		})
@@ -52,7 +53,7 @@ func TestNewLoggingInstance(t *testing.T) {
 	})
 
 	Convey("Test Logger Logstash Formatter", t, func() {
-		opts, err := options.New(map[string]interface{}{
+		opts, err := options.New(options.BaseAdapter, map[string]interface{}{
 			"formatter": "logstash",
 			"level":     logrus.FatalLevel,
 		})
@@ -70,7 +71,7 @@ func TestMiddlewareIntegration(t *testing.T) {
 	rlog := reactLog.New(generalLogContainer)
 	rlog.AddReaction("user ID 107", &reactLog.Redirect{logContainerForUser107})
 
-	opts, err := options.New(map[string]interface{}{
+	opts, err := options.New(options.BaseAdapter, map[string]interface{}{
 		"formatter": "text",
 		"level":     logrus.FatalLevel,
 	})

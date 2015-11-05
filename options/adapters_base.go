@@ -12,7 +12,11 @@ type AdapterBase struct {
 
 // Exists - Will check whenever key exists in options collection
 func (ab *AdapterBase) Exists(key string) bool {
-	return OptionExists(key, ab.Collection)
+	if _, exists := ab.Collection[key]; !exists {
+		return false
+	}
+
+	return true
 }
 
 // Get - Will retreive option from options collection or return nil in case that

@@ -4,23 +4,28 @@
 // license that can be found in the LICENSE file.
 package options
 
-// Option - Option container and type helper
-type Option struct {
-	Key   string      `option:"key"`
-	Value interface{} `option:"value"`
-}
+import "fmt"
 
 // New - Will return options based on adapter name and provided options.
 // This is a shortcut towards multiple adapters that are supported within this package
+//
+// Example
+// 	opt, err := options.New(options.BaseAdapter, map[string]interface{}{
+// 	  "test_option": "test_string_value",
+// 	})
 func New(adapter string, opts map[string]interface{}) (Options, error) {
 	var opt Options
 
+	if _, exists := AvailableAdapters[adapter]; !exists {
+		return nil, fmt.Errorf("Invalid options adapter provided. We do not support '%s'", adapter)
+	}
+
 	switch adapter {
-	case ADAPTER_BASE:
-		opt = Options(&AdapterBase{
-			Adapter:    &Adapter{Name: ADAPTER_BASE},
+	case BaseAdapter:
+		opt = &AdapterBase{
+			Adapter:    &Adapter{Name: BaseAdapter},
 			Collection: make(map[string]*Option),
-		})
+		}
 
 		if err := opt.SetMany(opts); err != nil {
 			return nil, err
