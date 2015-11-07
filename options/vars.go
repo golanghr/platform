@@ -5,12 +5,10 @@
 package options
 
 var (
-	BaseAdapter = "base"
-	EtcdAdapter = "etcd"
 
 	// AvailableAdapters - List of available adapters that are currently supported
 	AvailableAdapters = map[string]string{
-		BaseAdapter: "AdapterBase",
-		EtcdAdapter: "AdapterEtcd",
+		"memo": "Memo",
+		"etcd": "Etcd",
 	}
 )

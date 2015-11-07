@@ -10,7 +10,7 @@ import "fmt"
 // This is a shortcut towards multiple adapters that are supported within this package
 //
 // Example
-// 	opt, err := options.New(options.BaseAdapter, map[string]interface{}{
+// 	opt, err := options.New("map", map[string]interface{}{
 // 	  "test_option": "test_string_value",
 // 	})
 func New(adapter string, opts map[string]interface{}) (Options, error) {
@@ -21,9 +21,9 @@ func New(adapter string, opts map[string]interface{}) (Options, error) {
 	}
 
 	switch adapter {
-	case BaseAdapter:
-		opt = &AdapterBase{
-			Adapter:    &Adapter{Name: BaseAdapter},
+	case "memo":
+		opt = &Memo{
+			Adapter:    &Adapter{Name: "map"},
 			Collection: make(map[string]*Option),
 		}
 

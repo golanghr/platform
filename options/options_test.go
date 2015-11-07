@@ -11,7 +11,7 @@ import (
 )
 
 func TestOptionsBaseAdapter(t *testing.T) {
-	opt, err := New("base", map[string]interface{}{
+	opt, err := New("memo", map[string]interface{}{
 		"option_string":     "test",
 		"option_int":        22,
 		"option_uint":       uint(22),
@@ -31,7 +31,7 @@ func TestOptionsBaseAdapter(t *testing.T) {
 	})
 
 	Convey("Should return proper options without any errors", t, func() {
-		So(opt, ShouldHaveSameTypeAs, &AdapterBase{})
+		So(opt, ShouldHaveSameTypeAs, &Memo{})
 		So(err, ShouldBeNil)
 	})
 
