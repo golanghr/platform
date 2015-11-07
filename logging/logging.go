@@ -27,8 +27,11 @@ func New(opts options.Options) Logging {
 		Options: opts,
 	}
 
-	if opts.Exists("formatter") {
-		switch opts.Get("formatter").String() {
+	formatter, exists := opts.Get("formatter")
+	level, levelExists := opts.Get("level")
+
+	if exists {
+		switch formatter.String() {
 		case "text":
 			logger.Formatter = new(logrus.TextFormatter)
 		case "json":
@@ -40,8 +43,8 @@ func New(opts options.Options) Logging {
 		}
 	}
 
-	if opts.Exists("level") {
-		logger.Level = opts.Get("level").Interface().(logrus.Level)
+	if levelExists {
+		logger.Level = level.Interface().(logrus.Level)
 	}
 
 	return logger
