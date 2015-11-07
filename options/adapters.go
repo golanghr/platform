@@ -6,8 +6,7 @@ package options
 
 // Options -
 type Options interface {
-	Exists(key string) bool
-	Get(key string) *Option
+	Get(key string) (*Option, bool)
 	GetMany(keys []string) []*Option
 	Set(key string, value interface{}) error
 	SetMany(opts map[string]interface{}) error

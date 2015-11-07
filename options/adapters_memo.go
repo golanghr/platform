@@ -10,22 +10,11 @@ type Memo struct {
 	Collection map[string]*Option
 }
 
-// Exists - Will check whenever key exists in options collection
-func (m *Memo) Exists(key string) bool {
-	if _, exists := m.Collection[key]; !exists {
-		return false
-	}
-
-	return true
-}
-
 // Get - Will retreive option from options collection or return nil in case that
 // nothing is found.
-func (m *Memo) Get(key string) *Option {
-	if !m.Exists(key) {
-		return nil
-	}
-	return m.Collection[key]
+func (m *Memo) Get(key string) (o *Option, ok bool) {
+	o, ok = m.Collection[key]
+	return
 }
 
 // GetMany - Will attempt to get many keys. In case that key does not exist it will
@@ -34,8 +23,9 @@ func (m *Memo) GetMany(keys []string) []*Option {
 	var opts []*Option
 
 	for _, key := range keys {
-		if m.Exists(key) {
-			opts = append(opts, m.Get(key))
+		if _, ok := m.Collection[key]; ok {
+			option, _ := m.Get(key)
+			opts = append(opts, option)
 		}
 	}
 
@@ -62,7 +52,7 @@ func (m *Memo) SetMany(opts map[string]interface{}) (err error) {
 // Unset - Will attempt to delete option from the collection. Will return boolean
 // depending on if it's deleted or not.
 func (m *Memo) Unset(key string) bool {
-	if !m.Exists(key) {
+	if _, ok := m.Collection[key]; !ok {
 		return false
 	}
 
