@@ -8,6 +8,7 @@ package service
 import (
 	"testing"
 
+	"github.com/golanghr/platform/options"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -17,11 +18,14 @@ var (
 )
 
 func TestNewServiceCreation(t *testing.T) {
-	Convey("Test Required Logging Type", t, func() {
+	Convey("By passing proper details we are getting valid service", t, func() {
 
-		serv, err := getService(t)
+		opts, err := options.New("memo", map[string]interface{}{})
+		So(err, ShouldBeNil)
+
+		serv, err := New(opts)
 
 		So(err, ShouldBeNil)
-		So(serv, ShouldHaveSameTypeAs, Instance{})
+		So(serv, ShouldHaveSameTypeAs, Service{})
 	})
 }

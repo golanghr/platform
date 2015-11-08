@@ -5,8 +5,4 @@
 // Package service ...
 package service
 
-const (
-	ServiceNameTag        = "service-name"
-	ServiceDescriptionTag = "service-description"
-	ServiceVersionTag     = "service-version"
-)
+const ()

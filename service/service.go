@@ -5,89 +5,49 @@
 // Package service ...
 package service
 
-import (
-	"github.com/golanghr/platform/config"
-	"github.com/golanghr/platform/logging"
-)
+import "github.com/golanghr/platform/options"
 
-// Instance - Service instance wrapper
-type Instance struct {
-	Config config.Manager
-	Logger logging.Logging
+// Service - Service instance wrapper
+type Service struct {
+	Options options.Options
 
 	Quit chan bool
 }
 
 // GetQuitChan -
-func (i *Instance) GetQuitChan() chan bool {
-	return i.Quit
+func (s *Service) GetQuitChan() chan bool {
+	return s.Quit
 }
 
-// GetConfig - Will return back configuration manager
-func (i *Instance) GetConfig() config.Manager {
-	return i.Config
-}
-
-// GetLogger -
-func (i *Instance) GetLogger() logging.Logging {
-	return i.Logger
+// GetOptions - Will return back options manager
+func (s *Service) GetOptions() options.Options {
+	return s.Options
 }
 
 // Name - Will return name of the service
-func (i *Instance) Name() string {
-	var value *config.Value
-	var err error
-
-	if value, err = i.Config.Get(ServiceNameTag); err != nil {
-		return ""
-	}
-
-	return value.Value()
+func (s *Service) Name() string {
+	name, _ := s.Options.Get("service-name")
+	return name.String()
 }
 
 // Description - Will return description of the service
-func (i *Instance) Description() string {
-	var value *config.Value
-	var err error
-
-	if value, err = i.Config.Get(ServiceDescriptionTag); err != nil {
-		return ""
-	}
-
-	return value.Value()
+func (s *Service) Description() string {
+	name, _ := s.Options.Get("service-description")
+	return name.String()
 }
 
 // Version - Will return version of the service
-func (i *Instance) Version() string {
-	var value *config.Value
-	var err error
-
-	if value, err = i.Config.Get(ServiceVersionTag); err != nil {
-		return ""
-	}
-
-	return value.Value()
+func (s *Service) Version() string {
+	name, _ := s.Options.Get("service-version")
+	return name.String()
 }
 
 // New -
-func New(cnf config.Manager, logger logging.Logging) (s Service, err error) {
-	s = Service(&Instance{
-		Config: cnf,
-		Logger: logger,
-		Quit:   make(chan bool),
+func New(opts options.Options) (s Servicer, err error) {
+	s = Servicer(&Service{
+		Options: opts,
+		Quit:    make(chan bool),
 	})
-
-	if err = cnf.Exists(ServiceNameTag); err != nil {
-		return
-	}
-
-	if err = cnf.Exists(ServiceDescriptionTag); err != nil {
-		return
-	}
-
-	if err = cnf.Exists(ServiceVersionTag); err != nil {
-		return
-	}
 
 	return
 }
