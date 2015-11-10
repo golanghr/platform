@@ -27,10 +27,7 @@ func New(opts options.Options) Logging {
 		Options: opts,
 	}
 
-	formatter, exists := opts.Get("formatter")
-	level, levelExists := opts.Get("level")
-
-	if exists {
+	if formatter, ok := opts.Get("formatter"); ok {
 		switch formatter.String() {
 		case "text":
 			logger.Formatter = new(logrus.TextFormatter)
@@ -43,7 +40,7 @@ func New(opts options.Options) Logging {
 		}
 	}
 
-	if levelExists {
+	if level, ok := opts.Get("level"); ok {
 		logger.Level = level.Interface().(logrus.Level)
 	}
 

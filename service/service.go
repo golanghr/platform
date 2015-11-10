@@ -37,9 +37,9 @@ func (s *Service) Description() string {
 }
 
 // Version - Will return version of the service
-func (s *Service) Version() string {
+func (s *Service) Version() float64 {
 	name, _ := s.Options.Get("service-version")
-	return name.String()
+	return name.Float()
 }
 
 // New -

@@ -11,7 +11,7 @@ import "github.com/golanghr/platform/options"
 type Servicer interface {
 	Name() string
 	Description() string
-	Version() string
+	Version() float64
 
 	GetOptions() options.Options
 	GetQuitChan() chan bool

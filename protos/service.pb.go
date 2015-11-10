@@ -5,11 +5,16 @@
 package platform
 
 import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 type Request struct {
+	Payload []byte `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
 }
 
 func (m *Request) Reset()         { *m = Request{} }
@@ -17,6 +22,7 @@ func (m *Request) String() string { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()    {}
 
 type Response struct {
+	Payload []byte `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
 }
 
 func (m *Response) Reset()         { *m = Response{} }
@@ -24,4 +30,6 @@ func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 
 func init() {
+	proto.RegisterType((*Request)(nil), "platform.Request")
+	proto.RegisterType((*Response)(nil), "platform.Response")
 }

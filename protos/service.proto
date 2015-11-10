@@ -2,9 +2,9 @@ syntax = "proto3";
 package platform;
 
 message Request {
-
+  bytes payload = 1;
 }
 
 message Response {
-
+  bytes payload = 1;
 }

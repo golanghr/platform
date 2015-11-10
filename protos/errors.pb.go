@@ -10,13 +10,16 @@ It is generated from these files:
 	service.proto
 
 It has these top-level messages:
+	Request
+	Response
 */
 package platform
 
 import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-
-func init() {
-}
+var _ = fmt.Errorf
+var _ = math.Inf

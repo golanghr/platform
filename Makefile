@@ -3,7 +3,7 @@ NAME = platform
 GO ?= go
 PROTOC ?= protoc
 
-PROTOCFLAGS = --go_out=plugins=grpc:.
+PROTOCFLAGS = --go_out=plugins=grpc:protos
 PROTOSPATH = protos
 PROTOS = protos/*.proto
 
