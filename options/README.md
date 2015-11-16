@@ -5,9 +5,9 @@ Base configuration package for [Golang.hr Platform].
 
 ### Design Concept / TODO
 
-  - [] Adapter friendly. If you wish to extend options to make'em work with [etcd], you should.
+  - [x] Adapter friendly. If you wish to extend options to make'em work with [etcd], you should.
   - [x] Base adapter. Should be simple collection of options
-  - [] [gRPC] support
+  - [gRPC] support
 
 ### License
 
