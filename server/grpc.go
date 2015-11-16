@@ -45,7 +45,7 @@ type Grpc struct {
 	ListenForever bool
 
 	// ConnectivityState indicates the state of a grpc connection.
-	ConnectivityState int
+	*ConnectivityState
 
 	options.Options
 	net.Listener
@@ -66,13 +66,13 @@ func (g *Grpc) Interface() interface{} {
 func (g *Grpc) Start() error {
 	g.Infof("Starting `%s` platform service ...", g.Name())
 
-	g.ConnectivityState = ConnectivityStateConnecting
+	g.ConnectivityState.SetStateConnecting()
 
 	errors := make(chan error)
 
 	go func(errors chan error) {
 		for {
-			g.ConnectivityState = ConnectivityStateReady
+			g.ConnectivityState.SetStateReady()
 
 			if err := g.Server.Serve(g.Listener); err != nil {
 				g.Errorf(
@@ -80,7 +80,7 @@ func (g *Grpc) Start() error {
 					g.Name(), err, g.ListenForever,
 				)
 				errors <- err
-				g.ConnectivityState = ConnectivityStateFailure
+				g.ConnectivityState.SetStateFailed()
 
 				if !g.ListenForever {
 					return
@@ -99,9 +99,9 @@ func (g *Grpc) Start() error {
 // @TODO - Figure out way how to handle graceful shutdown...
 func (g *Grpc) Stop() error {
 	g.Infof("Stopping `%s` platform service ...", g.Name())
-	g.ConnectivityState = ConnectivityStateShutdown
+	g.ConnectivityState.SetStateShutdown()
 	g.Server.Stop()
-	g.ConnectivityState = ConnectivityStateDown
+	g.ConnectivityState.SetStateDown()
 	return nil
 }
 
@@ -116,8 +116,8 @@ func (g *Grpc) Restart() error {
 	return g.Start()
 }
 
-// ConnectionState - indicates the state of a grpc connection.
-func (g *Grpc) ConnectionState() int {
+// State - indicates the state of a grpc connection.
+func (g *Grpc) State() *ConnectivityState {
 	return g.ConnectivityState
 }
 
@@ -171,7 +171,7 @@ func NewGrpcServer(serv service.Servicer, opts options.Options, logger logging.L
 		Listener:          listener,
 		Logging:           logger,
 		Servicer:          serv,
-		ConnectivityState: ConnectivityStateDown,
+		ConnectivityState: &ConnectivityState{},
 	}
 
 	if listenForever, lfOk := opts.Get("grpc-listen-forever"); lfOk {

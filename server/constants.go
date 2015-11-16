@@ -26,22 +26,4 @@ SOFTWARE.
 // Package server ...
 package server
 
-const (
-	// ConnectivityStateDown indicates the Server is down.
-	ConnectivityStateDown = 0
-
-	// ConnectivityStateIdle indicates the Server is idle.
-	ConnectivityStateIdle = 1
-
-	// ConnectivityStateConnecting indicates the Server is connecting.
-	ConnectivityStateConnecting = 2
-
-	// ConnectivityStateReady indicates the Server is ready for work.
-	ConnectivityStateReady = 3
-
-	// ConnectivityStateFailure indicates the Server received failure.
-	ConnectivityStateFailure = 4
-
-	// ConnectivityStateShutdown indicates the ClientConn has started shutting down.
-	ConnectivityStateShutdown = 5
-)
+const ()

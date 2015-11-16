@@ -169,6 +169,7 @@ func TestGrpcOptions(t *testing.T) {
 
 func TestGrpcConnectivityState(t *testing.T) {
 	grpcserv, err := NewGrpcServer(getService(), getOptions(), logging.New(getOptions()))
+	grpcstate := grpcserv.State()
 
 	Convey("By initializing GRPC server we are getting proper *server.Grpc without any errors", t, func() {
 		So(grpcserv, ShouldHaveSameTypeAs, &Grpc{})
@@ -176,16 +177,16 @@ func TestGrpcConnectivityState(t *testing.T) {
 	})
 
 	Convey("By manipulating runtime connection status is changing.", t, func() {
-		So(grpcserv.ConnectionState(), ShouldEqual, ConnectivityStateDown)
+		So(grpcstate.GetCurrentState(), ShouldEqual, grpcstate.GetStateByName("down"))
 
 		go grpcserv.Start()
 
 		time.Sleep(100 * time.Microsecond)
-		So(grpcserv.ConnectionState(), ShouldEqual, ConnectivityStateReady)
+		So(grpcstate.GetCurrentState(), ShouldEqual, grpcstate.GetStateByName("ready"))
 
 		err := grpcserv.Stop()
 		So(err, ShouldBeNil)
-		So(grpcserv.ConnectionState(), ShouldEqual, ConnectivityStateDown)
+		So(grpcstate.GetCurrentState(), ShouldEqual, grpcstate.GetStateByName("down"))
 	})
 
 }

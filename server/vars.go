@@ -26,11 +26,16 @@ SOFTWARE.
 // Package server ...
 package server
 
-// Serverer - Global server interface that ALL servers should satisfy
-type Serverer interface {
-	Start() error
-	Stop() error
-	Restart() error
-	Interface() interface{}
-	State() *ConnectivityState
-}
+var (
+
+	// connectivityStates - list of connection status that one can inherit.
+	// default is always down.
+	connectivityStates = map[string]int64{
+		"down":       0,
+		"idle":       1,
+		"connecting": 2,
+		"ready":      3,
+		"failed":     4,
+		"shutdown":   5,
+	}
+)
