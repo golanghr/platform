@@ -176,7 +176,7 @@ func TestGrpcConnectivityState(t *testing.T) {
 		So(err, ShouldBeNil)
 	})
 
-	Convey("By manipulating runtime connection status is changing.", t, func() {
+	Convey("By manipulating runtime connection state is changing.", t, func() {
 		So(grpcstate.GetCurrentState(), ShouldEqual, grpcstate.GetStateByName("down"))
 
 		go grpcserv.Start()
@@ -188,5 +188,4 @@ func TestGrpcConnectivityState(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(grpcstate.GetCurrentState(), ShouldEqual, grpcstate.GetStateByName("down"))
 	})
-
 }

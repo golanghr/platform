@@ -28,8 +28,7 @@ package server
 
 var (
 
-	// connectivityStates - list of connection status that one can inherit.
-	// default is always down.
+	// connectivityStates - list of connection states that server can inherit.
 	connectivityStates = map[string]int64{
 		"down":       0,
 		"idle":       1,

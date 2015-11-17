@@ -30,6 +30,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"sync"
 
 	"github.com/golanghr/platform/logging"
 	"github.com/golanghr/platform/options"
@@ -38,7 +39,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-// Grpc -
+// Grpc - Wrapper on top of googles grpc.io server
 type Grpc struct {
 
 	// IF grpc fails, it will restart it immediately...
@@ -51,7 +52,7 @@ type Grpc struct {
 	net.Listener
 	logging.Logging
 	service.Servicer
-
+	mu sync.Mutex
 	*grpc.Server
 }
 
@@ -64,43 +65,39 @@ func (g *Grpc) Interface() interface{} {
 // Start - Proxy on top of grpc.Server with functionallity to auto restart if
 // Grpc.ListenForever is set to be true.
 func (g *Grpc) Start() error {
-	g.Infof("Starting `%s` platform service ...", g.Name())
+	for {
+		g.Infof("(Re)Starting `%s` platform service ...", g.Name())
+		g.ConnectivityState.SetStateConnecting()
 
-	g.ConnectivityState.SetStateConnecting()
+		// This is really just a hack how to notify every one else that things have been started.
+		// In case that there are some failures, it will be altered later on.
+		g.ConnectivityState.SetStateReady()
 
-	errors := make(chan error)
+		if err := g.Server.Serve(g.Listener); err != nil {
+			g.ConnectivityState.SetStateFailed()
+			g.Errorf(
+				"[GRPC] Service `%s` listener failed due to (err: %s). Restarting service ? (%v)...",
+				g.Name(), err, g.ListenForever,
+			)
 
-	go func(errors chan error) {
-		for {
-			g.ConnectivityState.SetStateReady()
-
-			if err := g.Server.Serve(g.Listener); err != nil {
-				g.Errorf(
-					"[GRPC] Service `%s` listener failed due to (err: %s). Restarting service ? (%v)...",
-					g.Name(), err, g.ListenForever,
-				)
-				errors <- err
-				g.ConnectivityState.SetStateFailed()
-
-				if !g.ListenForever {
-					return
-				}
+			if !g.ListenForever {
+				return err
 			}
-		}
-	}(errors)
 
-	select {
-	case err := <-errors:
-		return err
+			continue
+		}
 	}
 }
 
 // Stop - Proxy for grpc.Stop()
-// @TODO - Figure out way how to handle graceful shutdown...
 func (g *Grpc) Stop() error {
 	g.Infof("Stopping `%s` platform service ...", g.Name())
 	g.ConnectivityState.SetStateShutdown()
+
+	g.mu.Lock()
 	g.Server.Stop()
+	g.mu.Unlock()
+
 	g.ConnectivityState.SetStateDown()
 	return nil
 }
@@ -109,8 +106,12 @@ func (g *Grpc) Stop() error {
 func (g *Grpc) Restart() error {
 	g.Infof("Restarting `%s` platform service ...", g.Name())
 
+	g.mu.Lock()
 	// If status is connected
-	// Initiate stop... (use waitgroup)
+	if g.State().GetCurrentState() == g.GetStateByName("ready") {
+		g.Stop()
+	}
+	g.mu.Unlock()
 
 	// Initiate start...
 	return g.Start()
