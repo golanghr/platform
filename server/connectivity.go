@@ -28,7 +28,7 @@ package server
 
 import "fmt"
 
-// ConnectivityState -
+// ConnectivityState - Designed to keep track of server current connection state
 type ConnectivityState struct {
 	state int64
 }
@@ -88,4 +88,16 @@ func (cs *ConnectivityState) SetStateFailed() {
 // SetStateShutdown - Will set current state to SHUTDOWN
 func (cs *ConnectivityState) SetStateShutdown() {
 	cs.SetState("shutdown")
+}
+
+// String - Will return name of the state. If state cannot be found, empty
+// string will be returned
+func (cs *ConnectivityState) String() string {
+	for state, id := range connectivityStates {
+		if id == cs.GetCurrentState() {
+			return state
+		}
+	}
+
+	return ""
 }

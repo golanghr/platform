@@ -77,4 +77,8 @@ func TestConnectivityStates(t *testing.T) {
 		state.SetStateFailed()
 		So(state.GetCurrentState(), ShouldEqual, state.GetStateByName("failed"))
 	})
+
+	Convey("By invoking String() we are getting name of the current state", t, func() {
+		So(state.String(), ShouldEqual, "failed")
+	})
 }
