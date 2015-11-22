@@ -23,14 +23,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package server ...
-package server
-
-// Serverer - Global server interface that ALL servers should satisfy
-type Serverer interface {
-	Start() error
-	Stop() error
-	Restart() error
-	Interface() interface{}
-	State() *ConnectivityState
-}
+// Package servers ...
+package servers

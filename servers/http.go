@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package server ...
-package server
+// Package servers ...
+package servers
 
 import (
 	"errors"
@@ -37,14 +37,14 @@ import (
 
 	"github.com/golanghr/platform/logging"
 	"github.com/golanghr/platform/options"
-	"github.com/golanghr/platform/service"
+	"github.com/golanghr/platform/services"
 )
 
 // HTTP -
 type HTTP struct {
 	options.Options
 	*logging.Entry
-	service.Servicer
+	services.Servicer
 
 	// ConnectivityState indicates the state of a http connection.
 	*ConnectivityState
@@ -162,7 +162,7 @@ func (h *HTTP) State() *ConnectivityState {
 }
 
 // NewHTTPServer -
-func NewHTTPServer(serv service.Servicer, opts options.Options, logger *logging.Entry) (Serverer, error) {
+func NewHTTPServer(serv services.Servicer, opts options.Options, logger *logging.Entry) (Serverer, error) {
 
 	addr, addrOk := opts.Get("http-addr")
 

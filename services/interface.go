@@ -22,9 +22,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-// Package service ...
-package service
+// Package services ...
+package services
 
 import (
 	"os"
@@ -32,47 +31,12 @@ import (
 	"github.com/golanghr/platform/options"
 )
 
-// Service - Service instance wrapper
-type Service struct {
-	Options options.Options
+// Servicer -
+type Servicer interface {
+	Name() string
+	Description() string
+	Version() float64
 
-	Interrupt chan os.Signal
-}
-
-// GetInterruptChan -
-func (s *Service) GetInterruptChan() chan os.Signal {
-	return s.Interrupt
-}
-
-// GetOptions - Will return back options manager
-func (s *Service) GetOptions() options.Options {
-	return s.Options
-}
-
-// Name - Will return name of the service
-func (s *Service) Name() string {
-	name, _ := s.Options.Get("service-name")
-	return name.String()
-}
-
-// Description - Will return description of the service
-func (s *Service) Description() string {
-	name, _ := s.Options.Get("service-description")
-	return name.String()
-}
-
-// Version - Will return version of the service
-func (s *Service) Version() float64 {
-	name, _ := s.Options.Get("service-version")
-	return name.Float()
-}
-
-// New -
-func New(opts options.Options) (s Servicer, err error) {
-	s = Servicer(&Service{
-		Options:   opts,
-		Interrupt: make(chan os.Signal, 1),
-	})
-
-	return
+	GetOptions() options.Options
+	GetInterruptChan() chan os.Signal
 }

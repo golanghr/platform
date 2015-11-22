@@ -22,21 +22,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-// Package service ...
-package service
 
-import (
-	"os"
+// Package servers ...
+package servers
 
-	"github.com/golanghr/platform/options"
+var (
+
+	// connectivityStates - list of connection states that server can inherit.
+	connectivityStates = map[string]int64{
+		"down":       0,
+		"idle":       1,
+		"connecting": 2,
+		"ready":      3,
+		"failed":     4,
+		"shutdown":   5,
+	}
 )
-
-// Servicer -
-type Servicer interface {
-	Name() string
-	Description() string
-	Version() float64
-
-	GetOptions() options.Options
-	GetInterruptChan() chan os.Signal
-}

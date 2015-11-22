@@ -23,30 +23,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package service ...
-package service
-
-import (
-	"testing"
-
-	"github.com/golanghr/platform/options"
-	. "github.com/smartystreets/goconvey/convey"
-)
-
-var (
-	testEnv        = "test_local"
-	testEtcdFolder = "golanghr-test"
-)
-
-func TestNewServiceCreation(t *testing.T) {
-	Convey("By passing proper details we are getting valid service", t, func() {
-
-		opts, err := options.New("memo", map[string]interface{}{})
-		So(err, ShouldBeNil)
-
-		serv, err := New(opts)
-
-		So(err, ShouldBeNil)
-		So(serv, ShouldHaveSameTypeAs, Service{})
-	})
-}
+// Package servers ...
+package servers

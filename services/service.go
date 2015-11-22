@@ -23,17 +23,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package manager ...
-package manager
+// Package services ...
+package services
 
-import "github.com/golanghr/platform/server"
+import (
+	"os"
 
-// Managerer -
-type Managerer interface {
-	Attach(server string, i server.Serverer) error
-	Remove(server string) error
-	Available() map[string]server.Serverer
+	"github.com/golanghr/platform/options"
+)
 
-	Start() error
-	Stop() error
+// Service - Service instance wrapper
+type Service struct {
+	Options options.Options
+
+	Interrupt chan os.Signal
+}
+
+// GetInterruptChan -
+func (s *Service) GetInterruptChan() chan os.Signal {
+	return s.Interrupt
+}
+
+// GetOptions - Will return back options manager
+func (s *Service) GetOptions() options.Options {
+	return s.Options
+}
+
+// Name - Will return name of the service
+func (s *Service) Name() string {
+	name, _ := s.Options.Get("service-name")
+	return name.String()
+}
+
+// Description - Will return description of the service
+func (s *Service) Description() string {
+	name, _ := s.Options.Get("service-description")
+	return name.String()
+}
+
+// Version - Will return version of the service
+func (s *Service) Version() float64 {
+	name, _ := s.Options.Get("service-version")
+	return name.Float()
+}
+
+// New -
+func New(opts options.Options) (s Servicer, err error) {
+	s = Servicer(&Service{
+		Options:   opts,
+		Interrupt: make(chan os.Signal, 1),
+	})
+
+	return
 }

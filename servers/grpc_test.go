@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package server ...
-package server
+// Package servers ...
+package servers
 
 import (
 	"testing"
@@ -32,7 +32,7 @@ import (
 
 	"github.com/golanghr/platform/logging"
 	"github.com/golanghr/platform/options"
-	"github.com/golanghr/platform/service"
+	"github.com/golanghr/platform/services"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -48,7 +48,7 @@ var (
 	grpcListenForever  = true
 
 	testOptions options.Options
-	testService service.Servicer
+	testService services.Servicer
 	testLogging logging.Logging
 )
 

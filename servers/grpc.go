@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package server ...
-package server
+// Package servers ...
+package servers
 
 import (
 	"errors"
@@ -36,7 +36,7 @@ import (
 
 	"github.com/golanghr/platform/logging"
 	"github.com/golanghr/platform/options"
-	"github.com/golanghr/platform/service"
+	"github.com/golanghr/platform/services"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -57,7 +57,7 @@ type Grpc struct {
 	options.Options
 	net.Listener
 	*logging.Entry
-	service.Servicer
+	services.Servicer
 	mu sync.Mutex
 	*grpc.Server
 }
@@ -152,7 +152,7 @@ func (g *Grpc) State() *ConnectivityState {
 }
 
 // NewGrpcServer -
-func NewGrpcServer(serv service.Servicer, opts options.Options, logger *logging.Entry) (Serverer, error) {
+func NewGrpcServer(serv services.Servicer, opts options.Options, logger *logging.Entry) (Serverer, error) {
 
 	addr, addrOk := opts.Get("grpc-addr")
 

@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package manager ...
-package manager
+// Package managers ...
+package managers
 
 import (
 	"fmt"
@@ -36,17 +36,17 @@ import (
 
 	"github.com/golanghr/platform/logging"
 	"github.com/golanghr/platform/options"
-	"github.com/golanghr/platform/server"
-	"github.com/golanghr/platform/service"
+	"github.com/golanghr/platform/servers"
+	"github.com/golanghr/platform/services"
 )
 
 // Manager -
 type Manager struct {
-	service.Servicer
+	services.Servicer
 	options.Options
 	*logging.Entry
 
-	Servers map[string]server.Serverer
+	Servers map[string]servers.Serverer
 
 	// InterruptWaitTimeout
 	InterruptWaitTimeout time.Duration
@@ -59,7 +59,7 @@ type Manager struct {
 }
 
 // Attach - Will attach server to the servers map
-func (m *Manager) Attach(server string, i server.Serverer) error {
+func (m *Manager) Attach(server string, i servers.Serverer) error {
 	if _, ok := m.Servers[server]; ok {
 		return fmt.Errorf("Could not attach server `%s` as one is already attached.", server)
 	}
@@ -79,7 +79,7 @@ func (m *Manager) Remove(server string) error {
 }
 
 // Available - Will return list of all available servers
-func (m *Manager) Available() map[string]server.Serverer {
+func (m *Manager) Available() map[string]servers.Serverer {
 	return m.Servers
 }
 
@@ -96,7 +96,7 @@ func (m *Manager) Start() error {
 	go m.HandleInterrupt()
 
 	for _, serv := range m.Servers {
-		go func(serv server.Serverer) {
+		go func(serv servers.Serverer) {
 			if err := serv.Start(); err != nil {
 				errors <- err
 			}
@@ -135,7 +135,7 @@ func (m *Manager) Stop() error {
 		m.Infof("About to start shutting down (server: %s)", name)
 		m.wg.Add(1)
 
-		go func(serv server.Serverer) {
+		go func(serv servers.Serverer) {
 			if err := serv.Stop(); err != nil {
 				errors <- err
 			}
@@ -152,7 +152,7 @@ func (m *Manager) Stop() error {
 }
 
 // New -
-func New(serv service.Servicer, opts options.Options, logger *logging.Entry) (Managerer, error) {
+func New(serv services.Servicer, opts options.Options, logger *logging.Entry) (Managerer, error) {
 	waitTimeout := DefaultInterruptWaitTimeout
 
 	if miwt, ok := opts.Get("manager-interrupt-wait-timeout"); ok {
@@ -163,7 +163,7 @@ func New(serv service.Servicer, opts options.Options, logger *logging.Entry) (Ma
 		Servicer:             serv,
 		Options:              opts,
 		Entry:                logger,
-		Servers:              make(map[string]server.Serverer),
+		Servers:              make(map[string]servers.Serverer),
 		InterruptWaitTimeout: time.Duration(waitTimeout) * time.Second,
 		Interrupt:            serv.GetInterruptChan(),
 	}), nil

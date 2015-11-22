@@ -27,9 +27,12 @@ SOFTWARE.
 package handlers
 
 import (
+	"errors"
+
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golanghr/platform/logging"
-	"github.com/golanghr/platform/service"
+	"github.com/golanghr/platform/options"
+	"github.com/golanghr/platform/services"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -41,21 +44,21 @@ type HttpGrpcHandler struct {
 	*runtime.ServeMux
 
 	// Servicer - Is a Servicer interface
-	service.Servicer
+	services.Servicer
 
 	*logging.Entry
+
+	CertFile   *options.Option
+	CertDomain *options.Option
+	GrpcAddr   *options.Option
 }
 
-// ServeHTTP -
-func (hgh *HttpGrpcHandler) RegisterHandler(handler func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error) error {
+// RegisterHandlerTLS - Will register new TLS
+func (hgh *HttpGrpcHandler) RegisterHandlerTLS(handler func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error) error {
 	var opts []grpc.DialOption
 	var creds credentials.TransportAuthenticator
 
-	certFile, _ := hgh.GetOptions().Get("grpc-tls-cert")
-	domain, _ := hgh.GetOptions().Get("grpc-tls-domain")
-	grpcAddr, _ := hgh.GetOptions().Get("grpc-addr")
-
-	creds, err := credentials.NewClientTLSFromFile(certFile.String(), domain.String())
+	creds, err := credentials.NewClientTLSFromFile(hgh.CertFile.String(), hgh.CertDomain.String())
 
 	if err != nil {
 		return err
@@ -63,58 +66,65 @@ func (hgh *HttpGrpcHandler) RegisterHandler(handler func(context.Context, *runti
 
 	opts = append(opts, grpc.WithTransportCredentials(creds))
 
-	conn, err := grpc.Dial(grpcAddr.String(), opts...)
+	conn, err := grpc.Dial(hgh.GrpcAddr.String(), opts...)
 
 	if err != nil {
 		return err
 	}
+
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				hgh.Errorf("Failed to close conn to %s: %v", grpcAddr.String(), cerr)
+				hgh.Errorf("Failed to close conn to %s: %v", hgh.GrpcAddr.String(), cerr)
 			}
 			return
 		}
+
 		go func() {
 			<-hgh.ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				hgh.Errorf("Failed to close conn to %s: %v", grpcAddr.String(), cerr)
+				hgh.Errorf("Failed to close conn to %s: %v", hgh.GrpcAddr.String(), cerr)
 			}
 		}()
+
 	}()
 
 	return handler(hgh.ctx, hgh.ServeMux, conn)
 }
 
-// NewHttpGrpcHandler -
-func NewHttpGrpcHandler(serv service.Servicer, logger *logging.Entry, handler func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error) (*HttpGrpcHandler, error) {
+// NewHttpGrpcHandler - Will return back new HTTP GRPC handler
+func NewHttpGrpcHandler(serv services.Servicer, logger *logging.Entry, handler func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error) (*HttpGrpcHandler, error) {
+	grpcAddr, ok := serv.GetOptions().Get("grpc-addr")
+
+	if !ok {
+		return nil, errors.New("In order to register new grpc http handler `grpc-addr` must be set.")
+	}
+
+	certFile, ok := serv.GetOptions().Get("grpc-tls-cert")
+
+	if !ok {
+		return nil, errors.New("In order to register new grpc http handler `grpc-tls-cert` must be set.")
+	}
+
+	certDomain, ok := serv.GetOptions().Get("grpc-tls-domain")
+	if !ok {
+		return nil, errors.New("In order to register new grpc http handler `grpc-tls-domain` must be set.")
+	}
+
 	httpgrpc := &HttpGrpcHandler{
-		ctx:      context.Background(),
-		ServeMux: runtime.NewServeMux(),
-		Servicer: serv,
-		Entry:    logger,
+		ctx:        context.Background(),
+		ServeMux:   runtime.NewServeMux(),
+		Servicer:   serv,
+		Entry:      logger,
+		GrpcAddr:   grpcAddr,
+		CertFile:   certFile,
+		CertDomain: certDomain,
 	}
 
-	//
-	if err := httpgrpc.RegisterHandler(handler); err != nil {
+	// Will register provider handler (protocol buffer client) and start grpc.Dial
+	if err := httpgrpc.RegisterHandlerTLS(handler); err != nil {
 		return nil, err
 	}
-
-	/**
-	ctx := context.Background()
-	mux := runtime.NewServeMux()
-
-
-	grpcAddr, _ := opts.Get("grpc-addr")
-	certFile, _ := opts.Get("grpc-tls-cert")
-	certDomain, _ := opts.Get("grpc-tls-domain")
-
-	if err := RegisterHelloHandlerFromEndpointTLS(ctx, mux, grpcAddr.String(), certFile.String(), certDomain.String()); err != nil {
-		return nil, err
-	}
-
-
-	**/
 
 	return httpgrpc, nil
 }
