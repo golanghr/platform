@@ -23,7 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package service ...
-package service
+// Package utils ...
+package utils
 
-const ()
+func ProtoMarshal() []byte {
+	return nil
+}

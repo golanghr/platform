@@ -23,7 +23,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package service ...
-package service
+// Package platform ...
+package platform
 
-const ()
+import (
+	"github.com/golang/protobuf/proto"
+)
+
+// NewSimpleResponse -
+func NewSimpleResponse(message proto.Message) (*Response, error) {
+	payload, err := proto.Marshal(message)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &Response{
+		Payload: payload,
+	}, nil
+}
+
+// NewErrorResponse -
+func NewErrorResponse(message proto.Message) (*Response, error) {
+	return &Response{}, nil
+}

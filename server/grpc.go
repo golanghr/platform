@@ -30,7 +30,9 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"sync"
+	"time"
 
 	"github.com/golanghr/platform/logging"
 	"github.com/golanghr/platform/options"
@@ -48,9 +50,13 @@ type Grpc struct {
 	// ConnectivityState indicates the state of a grpc connection.
 	*ConnectivityState
 
+	// Interrupt signals the listener to stop serving connections,
+	// and the server to shut down.
+	Interrupt chan os.Signal
+
 	options.Options
 	net.Listener
-	logging.Logging
+	*logging.Entry
 	service.Servicer
 	mu sync.Mutex
 	*grpc.Server
@@ -65,51 +71,74 @@ func (g *Grpc) Interface() interface{} {
 // Start - Proxy on top of grpc.Server with functionallity to auto restart if
 // Grpc.ListenForever is set to be true.
 func (g *Grpc) Start() error {
+	// Debug message to help us from logging level understand if we're listening forever
+	// or until the first error
+	if g.ListenForever {
+		g.Debug("GRPC Service will listen forever ( will auto restart on error ) ...")
+	}
+
 	for {
-		g.Infof("(Re)Starting `%s` platform service ...", g.Name())
-		g.ConnectivityState.SetStateConnecting()
+		g.Infof("GRPC (Re)Starting platform service (addr: %s) ...", g.Addr().String())
+
+		g.SetStateConnecting()
 
 		// This is really just a hack how to notify every one else that things have been started.
 		// In case that there are some failures, it will be altered later on.
-		g.ConnectivityState.SetStateReady()
+		go func() {
+			time.Sleep(3 * time.Second)
+			if g.GetCurrentState() != g.GetStateByName("failed") {
+				g.SetStateReady()
+			}
+		}()
 
 		if err := g.Server.Serve(g.Listener); err != nil {
-			g.ConnectivityState.SetStateFailed()
-			g.Errorf(
-				"[GRPC] Service `%s` listener failed due to (err: %s). Restarting service ? (%v)...",
-				g.Name(), err, g.ListenForever,
-			)
+			g.SetStateFailed()
 
-			if !g.ListenForever {
-				return err
+			if g.ListenForever {
+				g.Errorf(
+					"HTTP server listener crashed due to (err: %s). Restarting server now...",
+					err, g.ListenForever,
+				)
+				continue
 			}
 
-			continue
+			return err
 		}
 	}
 }
 
-// Stop - Proxy for grpc.Stop()
+// Stop - Will attempt to stop gRPC server. In case that server is not started
+// we will return error
 func (g *Grpc) Stop() error {
-	g.Infof("Stopping `%s` platform service ...", g.Name())
-	g.ConnectivityState.SetStateShutdown()
+	g.Info("Stopping platform GRPC server...")
+
+	if g.GetCurrentState() != g.GetStateByName("ready") {
+		return fmt.Errorf("Could not stop GRPC server as it is NOT running...")
+	}
+
+	g.SetStateShutdown()
 
 	g.mu.Lock()
+	// Make sure that listen forever goes down...
+	g.ListenForever = false
 	g.Server.Stop()
 	g.mu.Unlock()
 
-	g.ConnectivityState.SetStateDown()
+	g.SetStateDown()
 	return nil
 }
 
 // Restart - Will initiate full service restart ...
 func (g *Grpc) Restart() error {
-	g.Infof("Restarting `%s` platform service ...", g.Name())
+	g.Info("Restarting platform service ...")
 
 	g.mu.Lock()
-	// If status is connected
 	if g.State().GetCurrentState() == g.GetStateByName("ready") {
 		g.Stop()
+	}
+	// Make sure we return back listen-forever state back to one from options
+	if listenForever, lfOk := g.Options.Get("grpc-listen-forever"); lfOk {
+		g.ListenForever = listenForever.Bool()
 	}
 	g.mu.Unlock()
 
@@ -123,7 +152,7 @@ func (g *Grpc) State() *ConnectivityState {
 }
 
 // NewGrpcServer -
-func NewGrpcServer(serv service.Servicer, opts options.Options, logger logging.Logging) (Serverer, error) {
+func NewGrpcServer(serv service.Servicer, opts options.Options, logger *logging.Entry) (Serverer, error) {
 
 	addr, addrOk := opts.Get("grpc-addr")
 
@@ -170,9 +199,10 @@ func NewGrpcServer(serv service.Servicer, opts options.Options, logger logging.L
 		Options:           opts,
 		Server:            grpcServer,
 		Listener:          listener,
-		Logging:           logger,
+		Entry:             logger,
 		Servicer:          serv,
 		ConnectivityState: &ConnectivityState{},
+		Interrupt:         serv.GetInterruptChan(),
 	}
 
 	if listenForever, lfOk := opts.Get("grpc-listen-forever"); lfOk {

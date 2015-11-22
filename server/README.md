@@ -4,7 +4,7 @@ you can use to start up your services.
 
 
 ### Design Concept / TODO
-  - [x] [gRPC] Server (in progress...)
+  - [x] [gRPC] Server
   - HTTP Server
   - AMQP Server
   - MQTT Server

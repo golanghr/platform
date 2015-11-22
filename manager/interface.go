@@ -23,7 +23,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package service ...
-package service
+// Package manager ...
+package manager
 
-const ()
+import "github.com/golanghr/platform/server"
+
+// Managerer -
+type Managerer interface {
+	Attach(server string, i server.Serverer) error
+	Remove(server string) error
+	Available() map[string]server.Serverer
+
+	Start() error
+	Stop() error
+}

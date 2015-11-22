@@ -23,26 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package errors ...
-package errors
+// Package manager ...
+package manager
 
-// Error - Wrapper around go error that fits platform needs
-type Error struct {
-	Message string
-	Code    int64
-}
+const (
 
-// Error - Returning error message provided
-func (e *Error) Error() string {
-	return e.Message
-}
-
-// GetCode - Returning code provided
-func (e *Error) GetCode() int64 {
-	return e.Code
-}
-
-// New - Returning new platform error
-func New(err string, code int64) error {
-	return &Error{Message: err, Code: code}
-}
+	// DefaultInterruptWaitTimeout -
+	DefaultInterruptWaitTimeout = 5
+)
