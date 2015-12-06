@@ -1,64 +1,27 @@
-// Copyright 2015 The Golang.hr Authors. All rights reserved.
-// Use of this source code is governed by a MIT-style
-// license that can be found in the LICENSE file.
+/*
+Copyright (c) 2015 Golang Croatia
+All rights reserved.
+
+The MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 // Package utils ...
 package utils
-
-import "time"
-
-// StringInSlice - Will check if string in list. This is equivalent to python if x in []
-func StringInSlice(str string, list []string) bool {
-	for _, value := range list {
-		if value == str {
-			return true
-		}
-	}
-	return false
-}
-
-// KeyInSlice - Will check if key in list. This is equivalent to python if x in []
-func KeyInSlice(str string, list map[string]interface{}) bool {
-	for key, _ := range list {
-		if key == str {
-			return true
-		}
-	}
-	return false
-}
-
-// GetStringFromMap - Will return string value from key-value based storage
-func GetStringFromMap(store map[string]interface{}, key string) string {
-	if !KeyInSlice(key, store) {
-		return ""
-	}
-
-	return store[key].(string)
-}
-
-// GetStringsFromMap - Will return strings value from key-value based storage
-func GetStringsFromMap(store map[string]interface{}, key string) []string {
-	if !KeyInSlice(key, store) {
-		return nil
-	}
-
-	return store[key].([]string)
-}
-
-// GetDurationFromMap - Will return time.Duration value from key-value based storage
-func GetDurationFromMap(store map[string]interface{}, key string) time.Duration {
-	if !KeyInSlice(key, store) {
-		return 0
-	}
-
-	return store[key].(time.Duration)
-}
-
-// GetBoolFromMap - Will return bool value from key-value based storage
-func GetBoolFromMap(store map[string]interface{}, key string) bool {
-	if !KeyInSlice(key, store) {
-		return false
-	}
-
-	return store[key].(bool)
-}

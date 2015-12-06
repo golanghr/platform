@@ -22,65 +22,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-// Package logging ...
-package logging
+// Package services ...
+package services
 
 import (
-	"io"
+	"os"
 
-	"github.com/Sirupsen/logrus"
-	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
 	"github.com/golanghr/platform/options"
 )
 
-// Entry -
-type Entry struct {
-	*logrus.Entry
-}
+// Servicer -
+type Servicer interface {
+	Name() string
+	Description() string
+	Version() float64
 
-// Logging - A small wrapper around logrus.Logger
-type Logging struct {
-	*logrus.Logger
-	options.Options
-}
-
-// WithFields -
-func (l *Logging) WithFields(fields logrus.Fields) *Entry {
-	return &Entry{
-		l.Logger.WithFields(fields),
-	}
-}
-
-// New - Will create new Logging instance
-func New(opts options.Options) Logging {
-
-	logger := Logging{
-		Logger:  logrus.New(),
-		Options: opts,
-	}
-
-	if formatter, ok := opts.Get("formatter"); ok {
-		switch formatter.String() {
-		case "text":
-			logger.Formatter = new(logrus.TextFormatter)
-		case "json":
-			logger.Formatter = new(logrus.JSONFormatter)
-		case "logstash":
-			logger.Formatter = new(logstashf.LogstashFormatter)
-		default:
-			logger.Formatter = new(logrus.TextFormatter)
-		}
-	}
-
-	if level, ok := opts.Get("level"); ok {
-		logger.Level = level.Interface().(logrus.Level)
-	}
-
-	return logger
-}
-
-// SetOutput of logger
-func (l *Logging) SetOutput(w io.Writer) {
-	l.Logger.Out = w
+	GetOptions() options.Options
+	GetInterruptChan() chan os.Signal
 }

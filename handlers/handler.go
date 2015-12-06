@@ -1,12 +1,8 @@
-# [Golang.hr] Platform service package
-Base service package for [Golang.hr Platform].
-
-### License
-
-```
-The MIT License (MIT)
-
+/*
 Copyright (c) 2015 Golang Croatia
+All rights reserved.
+
+The MIT License (MIT)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +21,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
+*/
 
-[Golang.hr]: <https://github.com/golanghr>
-[Golang.hr Platform]: <https://github.com/golanghr/platform>
+package handlers
+
+import (
+	"net/http"
+
+	"github.com/golanghr/platform/logging"
+	"github.com/golanghr/platform/services"
+	"golang.org/x/net/context"
+)
+
+// Handler -
+type Handler struct {
+	ctx context.Context
+
+	*http.ServeMux
+}
+
+// New -
+func New(serv services.Servicer, logger *logging.Entry) (*Handler, error) {
+
+	return &Handler{}, nil
+}

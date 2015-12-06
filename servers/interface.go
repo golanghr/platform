@@ -23,16 +23,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package utils ...
-package utils
+// Package servers ...
+package servers
 
-import "os"
-
-// GetFromEnvOr - Will attempt to return environment variable value or
-// fail back to provided defaults
-func GetFromEnvOr(env string, def string) string {
-	if res := os.Getenv(env); res != "" {
-		return res
-	}
-	return def
+// Serverer - Global server interface that ALL servers should satisfy
+type Serverer interface {
+	Start() error
+	Stop() error
+	Restart() error
+	Interface() interface{}
+	State() *ConnectivityState
 }

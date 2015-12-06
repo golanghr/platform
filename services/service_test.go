@@ -23,64 +23,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package logging ...
-package logging
+// Package services ...
+package services
 
 import (
-	"io"
+	"testing"
 
-	"github.com/Sirupsen/logrus"
-	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
 	"github.com/golanghr/platform/options"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
-// Entry -
-type Entry struct {
-	*logrus.Entry
-}
+var (
+	testEnv        = "test_local"
+	testEtcdFolder = "golanghr-test"
+)
 
-// Logging - A small wrapper around logrus.Logger
-type Logging struct {
-	*logrus.Logger
-	options.Options
-}
+func TestNewServiceCreation(t *testing.T) {
+	Convey("By passing proper details we are getting valid service", t, func() {
 
-// WithFields -
-func (l *Logging) WithFields(fields logrus.Fields) *Entry {
-	return &Entry{
-		l.Logger.WithFields(fields),
-	}
-}
+		opts, err := options.New("memo", map[string]interface{}{})
+		So(err, ShouldBeNil)
 
-// New - Will create new Logging instance
-func New(opts options.Options) Logging {
+		serv, err := New(opts)
 
-	logger := Logging{
-		Logger:  logrus.New(),
-		Options: opts,
-	}
-
-	if formatter, ok := opts.Get("formatter"); ok {
-		switch formatter.String() {
-		case "text":
-			logger.Formatter = new(logrus.TextFormatter)
-		case "json":
-			logger.Formatter = new(logrus.JSONFormatter)
-		case "logstash":
-			logger.Formatter = new(logstashf.LogstashFormatter)
-		default:
-			logger.Formatter = new(logrus.TextFormatter)
-		}
-	}
-
-	if level, ok := opts.Get("level"); ok {
-		logger.Level = level.Interface().(logrus.Level)
-	}
-
-	return logger
-}
-
-// SetOutput of logger
-func (l *Logging) SetOutput(w io.Writer) {
-	l.Logger.Out = w
+		So(err, ShouldBeNil)
+		So(serv, ShouldHaveSameTypeAs, Service{})
+	})
 }

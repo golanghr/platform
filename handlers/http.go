@@ -23,16 +23,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package utils ...
-package utils
+package handlers
 
-import "os"
+// HttpHandler -
+type HttpHandler struct{}
 
-// GetFromEnvOr - Will attempt to return environment variable value or
-// fail back to provided defaults
-func GetFromEnvOr(env string, def string) string {
-	if res := os.Getenv(env); res != "" {
-		return res
-	}
-	return def
+// NewHttpHandler -
+func NewHttpHandler() (*HttpHandler, error) {
+	return &HttpHandler{}, nil
 }

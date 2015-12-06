@@ -23,16 +23,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package utils ...
-package utils
+// Package platform ...
+package platform
 
-import "os"
+import (
+	"github.com/golang/protobuf/proto"
+)
 
-// GetFromEnvOr - Will attempt to return environment variable value or
-// fail back to provided defaults
-func GetFromEnvOr(env string, def string) string {
-	if res := os.Getenv(env); res != "" {
-		return res
+// NewSimpleResponse -
+func NewSimpleResponse(message proto.Message) (*Response, error) {
+	payload, err := proto.Marshal(message)
+
+	if err != nil {
+		return nil, err
 	}
-	return def
+
+	return &Response{
+		Payload: payload,
+	}, nil
+}
+
+// NewErrorResponse -
+func NewErrorResponse(message proto.Message) (*Response, error) {
+	return &Response{}, nil
 }

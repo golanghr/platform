@@ -23,64 +23,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package logging ...
-package logging
+// Package services ...
+package services
 
 import (
-	"io"
+	"os"
 
-	"github.com/Sirupsen/logrus"
-	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
 	"github.com/golanghr/platform/options"
 )
 
-// Entry -
-type Entry struct {
-	*logrus.Entry
+// Service - Service instance wrapper
+type Service struct {
+	Options options.Options
+
+	Interrupt chan os.Signal
 }
 
-// Logging - A small wrapper around logrus.Logger
-type Logging struct {
-	*logrus.Logger
-	options.Options
+// GetInterruptChan -
+func (s *Service) GetInterruptChan() chan os.Signal {
+	return s.Interrupt
 }
 
-// WithFields -
-func (l *Logging) WithFields(fields logrus.Fields) *Entry {
-	return &Entry{
-		l.Logger.WithFields(fields),
-	}
+// GetOptions - Will return back options manager
+func (s *Service) GetOptions() options.Options {
+	return s.Options
 }
 
-// New - Will create new Logging instance
-func New(opts options.Options) Logging {
-
-	logger := Logging{
-		Logger:  logrus.New(),
-		Options: opts,
-	}
-
-	if formatter, ok := opts.Get("formatter"); ok {
-		switch formatter.String() {
-		case "text":
-			logger.Formatter = new(logrus.TextFormatter)
-		case "json":
-			logger.Formatter = new(logrus.JSONFormatter)
-		case "logstash":
-			logger.Formatter = new(logstashf.LogstashFormatter)
-		default:
-			logger.Formatter = new(logrus.TextFormatter)
-		}
-	}
-
-	if level, ok := opts.Get("level"); ok {
-		logger.Level = level.Interface().(logrus.Level)
-	}
-
-	return logger
+// Name - Will return name of the service
+func (s *Service) Name() string {
+	name, _ := s.Options.Get("service-name")
+	return name.String()
 }
 
-// SetOutput of logger
-func (l *Logging) SetOutput(w io.Writer) {
-	l.Logger.Out = w
+// Description - Will return description of the service
+func (s *Service) Description() string {
+	name, _ := s.Options.Get("service-description")
+	return name.String()
+}
+
+// Version - Will return version of the service
+func (s *Service) Version() float64 {
+	name, _ := s.Options.Get("service-version")
+	return name.Float()
+}
+
+// New -
+func New(opts options.Options) (s Servicer, err error) {
+	s = Servicer(&Service{
+		Options:   opts,
+		Interrupt: make(chan os.Signal, 1),
+	})
+
+	return
 }

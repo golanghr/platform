@@ -23,16 +23,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package utils ...
-package utils
+// Package options ...
+package options
 
-import "os"
+// Options -
+type Options interface {
+	Get(key string) (*Option, bool)
+	GetMany(keys []string) []*Option
+	Set(key string, value interface{}) error
+	SetMany(opts map[string]interface{}) error
+	Unset(key string) bool
+	Interface() interface{}
+	String() string
+}
 
-// GetFromEnvOr - Will attempt to return environment variable value or
-// fail back to provided defaults
-func GetFromEnvOr(env string, def string) string {
-	if res := os.Getenv(env); res != "" {
-		return res
-	}
-	return def
+// Adapter -
+type Adapter struct {
+	Name string `option:"adapter_name"`
+}
+
+// Adapter - Name of current, initialized adapter
+func (a *Adapter) String() string {
+	return a.Name
 }

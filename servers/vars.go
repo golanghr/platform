@@ -23,16 +23,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package utils ...
-package utils
+// Package servers ...
+package servers
 
-import "os"
+var (
 
-// GetFromEnvOr - Will attempt to return environment variable value or
-// fail back to provided defaults
-func GetFromEnvOr(env string, def string) string {
-	if res := os.Getenv(env); res != "" {
-		return res
+	// connectivityStates - list of connection states that server can inherit.
+	connectivityStates = map[string]int64{
+		"down":       0,
+		"idle":       1,
+		"connecting": 2,
+		"ready":      3,
+		"failed":     4,
+		"shutdown":   5,
 	}
-	return def
-}
+)

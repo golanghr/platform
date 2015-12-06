@@ -23,16 +23,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package utils ...
-package utils
+// Package options ...
+package options
 
-import "os"
+var (
 
-// GetFromEnvOr - Will attempt to return environment variable value or
-// fail back to provided defaults
-func GetFromEnvOr(env string, def string) string {
-	if res := os.Getenv(env); res != "" {
-		return res
+	// AvailableAdapters - List of available adapters that are currently supported
+	AvailableAdapters = map[string]string{
+		"memo": "Memo",
 	}
-	return def
-}
+)
