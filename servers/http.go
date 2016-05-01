@@ -163,7 +163,7 @@ func (h *HTTP) State() *ConnectivityState {
 }
 
 // SetHandler -
-func (h *HTTP) SetHandler(uri string, handler http.Handler) {
+func (h *HTTP) SetHandler(handler http.Handler) {
 	h.Server.Handler = handler
 }
 

@@ -31,5 +31,6 @@ var (
 	// AvailableAdapters - List of available adapters that are currently supported
 	AvailableAdapters = map[string]string{
 		"memo": "Memo",
+		"env":  "Env",
 	}
 )

@@ -26,11 +26,15 @@ SOFTWARE.
 // Package servers ...
 package servers
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // ConnectivityState - Designed to keep track of server current connection state
 type ConnectivityState struct {
 	state int64
+	mu    sync.RWMutex
 }
 
 // GetStateByName - Will attempt to figure out state by name. If state is not
@@ -52,6 +56,9 @@ func (cs *ConnectivityState) GetCurrentState() int64 {
 // SetState - Will connection state. In case that state is not available it will
 // return error
 func (cs *ConnectivityState) SetState(state string) error {
+	cs.mu.Lock()
+	defer cs.mu.Unlock()
+
 	if _, ok := connectivityStates[state]; !ok {
 		return fmt.Errorf("Invalid connectivity state provided (provided: %s)", state)
 	}
