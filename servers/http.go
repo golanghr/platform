@@ -56,11 +56,9 @@ type HTTP struct {
 	// Limit the number of outstanding requests
 	ListenLimit int
 
-	// TLS Certificate
 	TLSCertFile string
-
-	// TLS Key
-	TLSKeyFile string
+	TLSKeyFile  string
+	UseTLS      bool
 
 	// Interrupt signals the listener to stop serving connections,
 	// and the server to shut down.
@@ -107,7 +105,13 @@ func (h *HTTP) Start() error {
 				}
 			}()
 
-			err := h.ListenAndServe()
+			var err error
+
+			if h.UseTLS {
+				err = h.ListenAndServeTLS(h.TLSCertFile, h.TLSKeyFile)
+			} else {
+				err = h.ListenAndServe()
+			}
 
 			if err != nil {
 				h.SetStateFailed()
@@ -201,6 +205,7 @@ func NewHTTPServer(serv services.Servicer, opts options.Options, logger *logging
 
 		s.TLSCertFile = certFile.String()
 		s.TLSKeyFile = certKeyFile.String()
+		s.UseTLS = useTLS.Bool()
 	}
 
 	if listenForever, lfOk := opts.Get("http-listen-forever"); lfOk {
