@@ -30,7 +30,6 @@ import (
 	"io"
 
 	"github.com/Sirupsen/logrus"
-	logstashf "github.com/Sirupsen/logrus/formatters/logstash"
 	"github.com/golanghr/platform/options"
 )
 
@@ -66,8 +65,6 @@ func New(opts options.Options) Logging {
 			logger.Formatter = new(logrus.TextFormatter)
 		case "json":
 			logger.Formatter = new(logrus.JSONFormatter)
-		case "logstash":
-			logger.Formatter = new(logstashf.LogstashFormatter)
 		default:
 			logger.Formatter = new(logrus.TextFormatter)
 		}
